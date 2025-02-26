@@ -1,6 +1,0 @@
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/OOP2.dir
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/edit_cache.dir
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/rebuild_cache.dir
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/list_install_components.dir
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/install.dir
-C:/Users/devli/OneDrive/Документы/OOP2/build/32bit-MinSizeRel/CMakeFiles/install/local.dir
