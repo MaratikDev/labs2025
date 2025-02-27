@@ -30,12 +30,7 @@ private:
     void onConvertValueClicked();
     void onCopyClicked();
     void updateLabels();
-
-    void handleOk();
-    void handleOutOfFourBytes();
-    void handleWrongSystem();
-    void handleUnacceptableNumber();
-    void handleEmpty();
     std::map<enum ResultLogic, std::function<void()>> methodsOfErrorsMap;
+    std::map<ResultLogic, char*> errorMessages;
 };
 #endif // MAINWINDOW_H

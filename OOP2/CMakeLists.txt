@@ -10,6 +10,8 @@ add_executable(OOP2 main.cpp
 
     Vector.h
     Iterator.h
+    Vector.hpp
+    Iterator.hpp
 
 
 

@@ -8,11 +8,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     // Волшебный метод генерирующий код
     ui->setupUi(this);
-    methodsOfErrorsMap[Ok] = std::bind(&MainWindow::handleOk, this);
-    methodsOfErrorsMap[OutOfFourBytes] = std::bind(&MainWindow::handleOutOfFourBytes, this);
-    methodsOfErrorsMap[WrongSystem] = std::bind(&MainWindow::handleWrongSystem, this);
-    methodsOfErrorsMap[UnacceptableNumber] = std::bind(&MainWindow::handleUnacceptableNumber, this);
-    methodsOfErrorsMap[Empty] = std::bind(&MainWindow::handleEmpty, this);
+    errorMessages[Ok] = "Ошибок нет";
+    errorMessages[OutOfFourBytes] = "Слишком большое число";
+    errorMessages[WrongSystem] = "Проблема с системой счисления!";
+    errorMessages[UnacceptableNumber] = "Проблема с введенным числом и системой счисления!";
+    errorMessages[Empty] = "Что то не пошло не так....Неверный ввод или его отсутвие)";
     // Функция связи сигналов (кнопок интерфейса) и слотов - функий обратного вызова (callback)
     connect(ui->updateButton, &QPushButton::clicked, this, &MainWindow::onConvertValueClicked);
     connect(ui->copyButton, &QPushButton::clicked, this, &MainWindow::onCopyClicked);
@@ -39,7 +39,16 @@ void MainWindow::onConvertValueClicked() {
     }
 
     ResultLogic result = doOperation(Convert, &context, &param);
-    methodsOfErrorsMap[result]();
+    // description = convertErrorToString(result);
+    // showErrorMessage(desc)
+    switch(result){
+    case Ok:
+        break;
+    default:
+        QMessageBox::critical(this, "Ошибка", errorMessages[result]);
+        break;
+    }
+
     updateLabels();
 }
 void MainWindow::onCopyClicked(){
@@ -50,22 +59,4 @@ void MainWindow::onCopyClicked(){
 void MainWindow::updateLabels() {
     ui->output->setText(QString::fromUtf8(context.outputValue));
 }
-void MainWindow::handleOk() {}
-
-void MainWindow::handleOutOfFourBytes() {
-    QMessageBox::critical(this, "Ошибка", "Слишком большое число");
-}
-
-void MainWindow::handleWrongSystem() {
-    QMessageBox::critical(this, "Ошибка", "Проблема с системой счисления!");
-}
-
-void MainWindow::handleUnacceptableNumber() {
-    QMessageBox::critical(this, "Ошибка", "Проблема с введенным числом и системой счисления!");
-}
-
-void MainWindow::handleEmpty() {
-    QMessageBox::critical(this, "Ошибка", "Что то не пошло не так....Неверный ввод или его отсутвие)");
-}
-
 

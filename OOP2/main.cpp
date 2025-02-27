@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cassert>
-#include "Vector.h"
+#include "Vector.hpp"
+#include "Iterator.hpp"
 
 void test_vector() {
     // initializer list
