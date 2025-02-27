@@ -1,9 +1,20 @@
 #include "ConsoleApp.h"
 #include <iostream>
+#include <ios>
+#include <limits>
 #include <algorithm>
 #include "circle.h"
 #include "rectangle.h"
 #include "triangle.h"
+#define MIN_CHOISE_FIRST 1
+#define MAX_CHOISE_FIRST 8
+#define MIN_CHOISE_SECOND 1
+#define MAX_CHOISE_SECOND 3
+
+ConsoleApp::ConsoleApp(){
+    initializeMethodsOfChoisesMap();
+    initializeMethodsOfShapesMap();
+}
 
 void ConsoleApp::initializeMethodsOfShapesMap() {
     methodsOfShapesMap[1] = [this]() { this->createCircle(); };
@@ -31,6 +42,9 @@ void ConsoleApp::addShape(Shape* shape) {
 }
 
 void ConsoleApp::printAllShapesInfo() {
+    for (auto shape : arrOfShapes){
+        shape->printInfo();
+    }
     for (int i = 0; i < arrOfShapes.size(); i++) {
         std::cout << i+1 << ": ";
         std::cout << *arrOfShapes[i];
@@ -119,7 +133,7 @@ void ConsoleApp::secondChoise() {
     std::cout << "2: Rectangle\n";
     std::cout << "3: Triangle\n";
     std::cin >> choise;
-    if (choise < 1 || choise > 3)
+    if (choise < MIN_CHOISE_SECOND || choise > MAX_CHOISE_SECOND)
         throw InvalidChoiceException("There are only 3 numbers). Pls choose one");
     auto it = methodsOfShapesMap.find(choise);
     it->second();
@@ -137,7 +151,8 @@ void ConsoleApp::firstChoise() {
     std::cout << "7: Delete shape if its square larger than input number\n";
     std::cout << "8: End program\n";
     std::cin >> choise;
-    if (choise < 1 || choise > 8)
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (choise < MIN_CHOISE_FIRST || choise > MAX_CHOISE_FIRST)
         throw InvalidChoiceException("There are only 8 numbers). Pls choose one");
     auto it = methodsOfChoisesMap.find(choise);
     it->second();
@@ -145,18 +160,12 @@ void ConsoleApp::firstChoise() {
 }
 
 void ConsoleApp::startApp() {
-    initializeMethodsOfChoisesMap();
-    initializeMethodsOfShapesMap();
     flag = 1;
     while (flag) {
         try {
             firstChoise();
-        } catch (const InvalidChoiceException& e) {
-            std::cerr << "Error: " << e.what() << std::endl;
-        } catch (const InvalidParameterException& e) {
-            std::cerr << "Error: " << e.what() << std::endl;
         } catch (const std::exception& e) {
-            std::cerr << "Unexpected error: " << e.what() << std::endl;
+            std::cerr << "Error: " << e.what() << std::endl;
         }
     }
 }

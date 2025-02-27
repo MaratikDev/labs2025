@@ -8,6 +8,7 @@
 
 class ConsoleApp {
 public:
+    ConsoleApp();
     void addShape(Shape* shape);
     void printAllShapesInfo();
     void printAllShapesInfoAndSquare();
