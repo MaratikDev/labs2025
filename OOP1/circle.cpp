@@ -1,6 +1,6 @@
 #include "circle.h"
 #include <cmath>
-Circle::Circle(Vertex center, double radius, std::string name):Shape(name) {
+Circle::Circle(Point center, double radius, std::string name):Shape(name) {
     this->center = center;
     this->radius = radius;
     if (radius <= 0)

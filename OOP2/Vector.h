@@ -18,11 +18,11 @@ public:
     Vector(const Vector<T>& vect);
     ~Vector();
 
-    int get_length();
-    void set_elem(int index, const T& elem);
+    int getLength();
+    void setElem(int index, const T& elem);
 
-    T& get_elem(int index);
-    T* to_array();
+    T& getElem(int index);
+    T* toArray();
     T& operator[](int index);
 
     Vector<T>& operator = (const Vector<T>& lst);
@@ -36,7 +36,7 @@ public:
     friend Vector<T> operator -(const Vector<T>& v1, const Vector<T>& v2);
     friend Vector<T> operator *(const Vector<T>& v1, const T& val);
     friend Vector<T> operator /(const Vector<T>& v1, const T& val);
-    Iterator<T> iterator_begin();
-    Iterator<T> iterator_end();
+    Iterator<T> begin();
+    Iterator<T> end();
 };
 #endif // VECTOR_H

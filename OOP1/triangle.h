@@ -1,10 +1,11 @@
 #ifndef TRIANGLE_H
 #define TRIANGLE_H
 #include "Shape.h"
-#include "Vertex.h"
+#include "Point.h"
+#define COUNT_OF_TRIANGLE_POINTS 3
 class Triangle : public Shape {
 public:
-    Triangle(Vertex firstVertex, Vertex secondVertex, Vertex thirdVertex, std::string name);
+    Triangle(Point firstVertex, Point secondVertex, Point thirdVertex, std::string name);
     double getSquare() const override;
     void printInfo() const override;
     friend std::ostream& operator << (std::ostream& os, const Triangle& triangle){
@@ -16,7 +17,7 @@ public:
     }
 
 private:
-    Vertex vertex[3];
+    Point point[COUNT_OF_TRIANGLE_POINTS];
 };
 
 #endif // TRIANGLE_H

@@ -6,9 +6,21 @@
 #include <map>
 #include <functional>
 
+enum RunStatus {
+    Stop,
+    Running
+};
+
 class ConsoleApp {
 public:
     ConsoleApp();
+    void startApp();
+    void stopProgram();
+private:
+    std::vector<Shape*> arrOfShapes;
+    std::map<int, void (ConsoleApp::*)()> methodsOfShapesMap;
+    std::map<int, void (ConsoleApp::*)()> methodsOfChoisesMap;
+    RunStatus isRunning;
     void addShape(Shape* shape);
     void printAllShapesInfo();
     void printAllShapesInfoAndSquare();
@@ -21,15 +33,8 @@ public:
     void createRectangle();
     void secondChoise();
     void firstChoise();
-    void startApp();
     void initializeMethodsOfShapesMap();
     void initializeMethodsOfChoisesMap();
-    void stopProgram();
-private:
-    std::vector<Shape*> arrOfShapes;
-    std::map<int, std::function<void()>> methodsOfShapesMap;
-    std::map<int, std::function<void()>> methodsOfChoisesMap;
-    int flag;
 };
 
 #endif // CONSOLEAPP_H

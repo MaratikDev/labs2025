@@ -10,10 +10,7 @@ public:
     virtual void printInfo() const = 0;
     virtual double getSquare() const = 0;
     virtual void print(std::ostream& os) const = 0;
-    friend std::ostream& operator<<(std::ostream& os, const Shape& shape) {
-        shape.print(os);
-        return os;
-    }
+    friend std::ostream& operator<<(std::ostream& os, const Shape& shape);
 };
 
 #endif // SHAPE_H

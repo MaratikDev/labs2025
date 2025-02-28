@@ -13,7 +13,7 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
         if (inputValue[0] == MINUS){
             isMinus = 1;
         }
-        if(!isValidNumber(inputValue, inputSystem)){
+        if((inputValue[0] == MINUS && inputSystem != DEFAULT_SYSTEM) || (!isValidNumber(inputValue, inputSystem))){
             result = UnacceptableNumber;
         }
         else if(inputSystem < MIN_SYSTEM || inputSystem > MAX_SYSTEM || outputSystem < MIN_SYSTEM || outputSystem > MAX_SYSTEM){
@@ -22,10 +22,12 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
         else if(strlen(inputValue) > findLengthOfNumber(inputSystem)){
             result = OutOfFourBytes;
         }
-
         else{
             if(inputSystem==outputSystem){
                 strncpy(context->outputValue, inputValue, MAX_LENGTH_OF_NUMBER - 1);
+            }
+            else if((inputSystem == MIN_SYSTEM) && (outputSystem == DEFAULT_SYSTEM)){
+                strncpy(context->outputValue,fromBinaryToDecimal(inputValue, isMinus),MAX_LENGTH_OF_NUMBER - 1);
             }
             else{
                 if(isMinus){
@@ -42,7 +44,9 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
 }
 void initialize(struct AppContext* context) {
     strncpy(context->outputValue , DEFAULT_VALUE, MAX_LENGTH_OF_NUMBER - 1);
-
+    strncpy(context->inputValue , DEFAULT_VALUE, MAX_LENGTH_OF_NUMBER - 1);
+    context->inputSystem = DEFAULT_SYSTEM;
+    context->outputSystem = DEFAULT_SYSTEM;
 }
 
 unsigned int toDecimal(const char* number, int base, int isMinus) {
@@ -86,6 +90,22 @@ char* fromDecimal(unsigned int decimal, int base) {
     strrev(result);
     return result;
 }
+char* fromBinaryToDecimal(const char* number, int isMinus){
+    unsigned int resultNumber = 0;
+    int length = strlen(number);
+    int digit;
+    for (int i = 0; i < length; i++) {
+        digit = number[i] - DIGIT_0;
+        resultNumber += pow(MIN_SYSTEM, length - i - 1) * digit;
+    }
+    if (isMinus) {
+        resultNumber = -resultNumber;
+    }
+    static char result[MAX_LENGTH_OF_NUMBER];
+    snprintf(result, MAX_LENGTH_OF_NUMBER, "%d", resultNumber);
+
+    return result;
+}
 
 int isValidNumber(const char* number, int base) {
     int result = 1;
@@ -115,4 +135,24 @@ int isValidNumber(const char* number, int base) {
 
 int findLengthOfNumber(int base){
     return COUNT_OF_BIT_IN_NUMBER/ceil(log2(base));
+}
+
+void saveInputValue(struct AppContext* context, char* inputValue){
+    strncpy(context->inputValue, inputValue,MAX_LENGTH_OF_NUMBER-1);
+}
+void saveInputSystem(struct AppContext* context, int inputSystem){
+    context->inputSystem = inputSystem;
+}
+void saveOutputSystem(struct AppContext* context, int outputSystem){
+    context->outputSystem = outputSystem;
+}
+void changeValues(struct AppContext* context){
+    int tempInt;
+    char tempChar[MAX_LENGTH_OF_NUMBER];
+    tempInt = context->inputSystem;
+    context->inputSystem = context->outputSystem;
+    context->outputSystem = tempInt;
+    strncpy(tempChar,context->inputValue,MAX_LENGTH_OF_NUMBER);
+    strncpy(context->inputValue,context->outputValue,MAX_LENGTH_OF_NUMBER);
+    strncpy(context->outputValue,tempChar,MAX_LENGTH_OF_NUMBER);
 }

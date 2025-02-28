@@ -17,24 +17,24 @@ ConsoleApp::ConsoleApp(){
 }
 
 void ConsoleApp::initializeMethodsOfShapesMap() {
-    methodsOfShapesMap[1] = [this]() { this->createCircle(); };
-    methodsOfShapesMap[2] = [this]() { this->createRectangle(); };
-    methodsOfShapesMap[3] = [this]() { this->createTriangle(); };
+    methodsOfShapesMap[1] = &ConsoleApp::createCircle;
+    methodsOfShapesMap[2] = &ConsoleApp::createRectangle;
+    methodsOfShapesMap[3] = &ConsoleApp::createTriangle;
 }
 
 void ConsoleApp::initializeMethodsOfChoisesMap(){
-    methodsOfChoisesMap[1] = [this]() { this->secondChoise(); };
-    methodsOfChoisesMap[2] = [this]() { this->printAllShapesInfo(); };
-    methodsOfChoisesMap[3] = [this]() { this->printAllShapesInfoAndSquare(); };
-    methodsOfChoisesMap[4] = [this]() { this->printSumOfSquares(); };
-    methodsOfChoisesMap[5] = [this]() { this->sortShapes(); };
-    methodsOfChoisesMap[6] = [this]() { this->deleteShapeByIndex(); };
-    methodsOfChoisesMap[7] = [this]() { this->deleteShapesbySquare(); };
-    methodsOfChoisesMap[8] = [this]() { this->stopProgram(); };
+    methodsOfChoisesMap[1] = &ConsoleApp::secondChoise;
+    methodsOfChoisesMap[2] = &ConsoleApp::printAllShapesInfo;
+    methodsOfChoisesMap[3] = &ConsoleApp::printAllShapesInfoAndSquare;
+    methodsOfChoisesMap[4] = &ConsoleApp::printSumOfSquares;
+    methodsOfChoisesMap[5] = &ConsoleApp::sortShapes;
+    methodsOfChoisesMap[6] = &ConsoleApp::deleteShapeByIndex;
+    methodsOfChoisesMap[7] = &ConsoleApp::deleteShapesbySquare;
+    methodsOfChoisesMap[8] = &ConsoleApp::stopProgram;
 }
 
 void ConsoleApp::stopProgram(){
-    this->flag = 0;
+    this->isRunning = Stop;
 }
 
 void ConsoleApp::addShape(Shape* shape) {
@@ -42,9 +42,6 @@ void ConsoleApp::addShape(Shape* shape) {
 }
 
 void ConsoleApp::printAllShapesInfo() {
-    for (auto shape : arrOfShapes){
-        shape->printInfo();
-    }
     for (int i = 0; i < arrOfShapes.size(); i++) {
         std::cout << i+1 << ": ";
         std::cout << *arrOfShapes[i];
@@ -61,8 +58,8 @@ void ConsoleApp::printAllShapesInfoAndSquare() {
 
 void ConsoleApp::printSumOfSquares() {
     double sum = 0;
-    for (int i = 0; i < arrOfShapes.size(); i++) {
-        sum += arrOfShapes[i]->getSquare();
+    for (Shape* i : arrOfShapes) {
+        sum += i->getSquare();
     }
     std::cout << sum << std::endl;
 }
@@ -93,37 +90,36 @@ void ConsoleApp::deleteShapesbySquare() {
 }
 
 void ConsoleApp::createCircle() {
-    double centerX;
-    double centerY;
+    Point center;
     double radius;
     std::string name;
     std::cout << "Input name and coordinates of center and radius: ";
-    std::cin >> name >> centerX >> centerY >> radius;
-    addShape(new Circle(Vertex(centerX, centerY), radius, name));
+    std::cin >> name;
+    std::cin >> center;
+    std::cin >> radius;
+    addShape(new Circle(center, radius, name));
 }
 
 void ConsoleApp::createTriangle() {
-    double vertex1X;
-    double vertex1Y;
-    double vertex2X;
-    double vertex2Y;
-    double vertex3X;
-    double vertex3Y;
+    Point points[COUNT_OF_TRIANGLE_POINTS];
     std::string name;
     std::cout << "Input name and coordinates of vertexes: ";
-    std::cin >> name >>  vertex1X >> vertex1Y >> vertex2X >> vertex2Y >> vertex3X >> vertex3Y;
-    addShape(new Triangle(Vertex(vertex1X, vertex1Y), Vertex(vertex2X, vertex2Y), Vertex(vertex3X, vertex3Y), name));
+    std::cin >> name;
+    for(int i = 0; i < COUNT_OF_TRIANGLE_POINTS; i++){
+        std::cin >> points[i];
+    }
+    addShape(new Triangle(points[0],points[1],points[2], name));
 }
 
 void ConsoleApp::createRectangle() {
-    double leftUpperVertexX;
-    double leftUpperVertexY;
-    double rightUppervertexX;
-    double rightUppervertexY;
+    Point points[COUNT_OF_RECTANGLE_POINTS];
     std::string name;
     std::cout << "Input name and coordinates of vertexes: leftUpperVertex, rightUppervertex : ";
-    std::cin >> name >> leftUpperVertexX >> leftUpperVertexY >> rightUppervertexX >> rightUppervertexY;
-    addShape(new Rectangle(Vertex(leftUpperVertexX, leftUpperVertexY), Vertex(rightUppervertexX, rightUppervertexY), name));
+    std::cin >> name;
+    for(int i = 0; i < COUNT_OF_RECTANGLE_POINTS; i++){
+        std::cin >> points[i];
+    }
+    addShape(new Rectangle(points[0],points[1], name));
 }
 
 void ConsoleApp::secondChoise() {
@@ -136,7 +132,7 @@ void ConsoleApp::secondChoise() {
     if (choise < MIN_CHOISE_SECOND || choise > MAX_CHOISE_SECOND)
         throw InvalidChoiceException("There are only 3 numbers). Pls choose one");
     auto it = methodsOfShapesMap.find(choise);
-    it->second();
+    (this->*(it->second))();
 }
 
 void ConsoleApp::firstChoise() {
@@ -155,13 +151,13 @@ void ConsoleApp::firstChoise() {
     if (choise < MIN_CHOISE_FIRST || choise > MAX_CHOISE_FIRST)
         throw InvalidChoiceException("There are only 8 numbers). Pls choose one");
     auto it = methodsOfChoisesMap.find(choise);
-    it->second();
+    (this->*(it->second))();
 
 }
 
 void ConsoleApp::startApp() {
-    flag = 1;
-    while (flag) {
+    isRunning = Running;
+    while (isRunning) {
         try {
             firstChoise();
         } catch (const std::exception& e) {

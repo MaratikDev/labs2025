@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cassert>
-#include "Vector.hpp"
-#include "Iterator.hpp"
-
-void test_vector() {
+#include "BinaryTree.hpp"
+//#include "Iterator.hpp"
+//#include "Vector.hpp"
+/*void test_vector() {
     // initializer list
     std::initializer_list<int> lst = {1, 2, 3, 4};
     Vector<int> v1(lst);
@@ -102,5 +102,32 @@ int main() {
     test_iterator();
 
     std::cout << "All tests passed!" << std::endl;
+    return 0;
+}*/
+
+int main() {
+    std::initializer_list<int> lst = {10, 5, 15, 3, 14, 7};
+    BinaryTree<int> tree(lst);
+    for(int i = 0; i<6;i++){
+        std::cout << *(tree.toArray()+i)<<"\n";
+    }
+    tree*=5;
+
+
+    //myTree.insert(1);
+
+
+    //myTree.insert(5);
+
+
+    //myTree.insert(3);
+
+    std::cout << tree;
+
+
+
+
+
+
     return 0;
 }

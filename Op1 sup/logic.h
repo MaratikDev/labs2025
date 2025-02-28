@@ -6,10 +6,10 @@
 #include <math.h>
 #include <ctype.h>
 #include "appcontext.h"
-
+#include <stdio.h>
 // Файл, представляющий основную (бизнес) логику приложения,
 // ничего не должен знать о Qt объектах, должен быть полностью написан на c/c++ (ОП/ООП)
-#define DEFAULT_VALUE ""
+#define DEFAULT_VALUE "0"
 #define DEFAULT_SYSTEM 10
 #define COUNT_OF_BIT_IN_NUMBER 32
 #define MINUS '-'
@@ -35,7 +35,12 @@ extern "C" {
 // Не забывайте что функции - это действия и должны описываться глаголами
 enum ResultLogic convert(struct AppContext* context, char* inputValue, int inputSystem, int outputSystem);
 void initialize(struct AppContext* context);
+void saveInputValue(struct AppContext* context, char* inputValue);
+void saveInputSystem(struct AppContext* context, int inputSystem);
+void saveOutputSystem(struct AppContext* context, int outputSystem);
+void changeValues(struct AppContext* context);
 unsigned int toDecimal(const char* number, int base, int isMinus);
+char* fromBinaryToDecimal(const char* number,int isMinus);
 char* fromDecimal(unsigned int decimal, int base);
 int isValidNumber(const char* number, int base);
 int findLengthOfNumber(int base);

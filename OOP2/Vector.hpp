@@ -3,11 +3,11 @@
 #include "Vector.h"
 
 template<typename T>
-Iterator<T> Vector<T>::iterator_begin(){
+Iterator<T> Vector<T>::begin(){
     return Iterator<T>(*this);
 }
 template<typename T>
-Iterator<T> Vector<T>::iterator_end(){
+Iterator<T> Vector<T>::end(){
     Iterator<T> iter(*this);
     while(!iter.is_end()){
         iter.next();
@@ -60,12 +60,12 @@ Vector<T>& Vector<T> :: operator = (const Vector<T>& lst) {
 }
 
 template<typename T>
-int Vector<T>::get_length() {
+int Vector<T>::getLength() {
     return this->size;
 }
 
 template<typename T>
-void Vector<T>::set_elem(int index, const T& elem) {
+void Vector<T>::setElem(int index, const T& elem) {
     if(index >= this->get_length())
         throw "out of range"; // потм сделать exception
     else{
@@ -74,7 +74,7 @@ void Vector<T>::set_elem(int index, const T& elem) {
 }
 
 template<typename T>
-T& Vector<T>::get_elem(int index) {
+T& Vector<T>::getElem(int index) {
     if(index >= this->get_length())
         throw "out of range"; // потм сделать exception
     else{
@@ -83,7 +83,7 @@ T& Vector<T>::get_elem(int index) {
 }
 
 template<typename T>
-T* Vector<T>::to_array() {
+T* Vector<T>::toArray() {
     T* array = new T[this->size];
     for (int i = 0; i < this->size; i++) {
         array[i] = this->arr[i];

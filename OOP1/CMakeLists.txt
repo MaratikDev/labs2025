@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_executable(OOP1 main.cpp
-    vertex.h vertex.cpp
+    point.h point.cpp
     shape.h
 
     consoleapp.h consoleapp.cpp

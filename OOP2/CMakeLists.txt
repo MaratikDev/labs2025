@@ -12,6 +12,11 @@ add_executable(OOP2 main.cpp
     Iterator.h
     Vector.hpp
     Iterator.hpp
+    BinaryTree.hpp
+    BinaryTree.h
+    IteratorBinTree.hpp
+    IteratorBinTree.h
+    TreeNode.h
 
 
 

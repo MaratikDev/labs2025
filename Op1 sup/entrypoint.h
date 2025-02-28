@@ -8,7 +8,11 @@
 // Операции, описывающие действия, выполняемые в (бизнес) логике приложения
 enum Operation {
     Convert,
-    Initialization
+    Initialization,
+    SaveInputValue,
+    SaveInputSystem,
+    SaveOutputSystem,
+    ChangeValues
 };
 
 // Структура, описывающая дополнительные поля-значения, необходимые для выполнения операции

@@ -102,6 +102,13 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="ChangeButton">
+        <property name="text">
+         <string>Поменять местами</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </item>
    </layout>
