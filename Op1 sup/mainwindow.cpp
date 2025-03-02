@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     errorMessages[UnacceptableNumber] = "Проблема с введенным числом и системой счисления!";
     errorMessages[Empty] = "Что то не пошло не так....Неверный ввод или его отсутвие)";
     // Функция связи сигналов (кнопок интерфейса) и слотов - функий обратного вызова (callback)
-    connect(ui->updateButton, &QPushButton::clicked, this, &MainWindow::onConvertValueClicked);
+    connect(ui->convertButton, &QPushButton::clicked, this, &MainWindow::onConvertValueClicked);
     connect(ui->copyButton, &QPushButton::clicked, this, &MainWindow::onCopyClicked);
     connect(ui->inputValue, &QLineEdit::textChanged, this, &MainWindow::inputValueChanged);
     connect(ui->inputSystem, &QLineEdit::textChanged, this, &MainWindow::inputSystemChanged);

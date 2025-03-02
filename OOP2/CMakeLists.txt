@@ -17,6 +17,10 @@ add_executable(OOP2 main.cpp
     IteratorBinTree.hpp
     IteratorBinTree.h
     TreeNode.h
+    exceptions.h
+    StaticTreeIterator.h
+    StaticIterator.h
+    StaticIterator.hpp
 
 
 

@@ -1,6 +1,6 @@
 #ifndef APPCONTEXT_H
 #define APPCONTEXT_H
-#define MAX_LENGTH_OF_NUMBER 34
+#define MAX_LENGTH_OF_NUMBER 33
 
 struct AppContext {
     char outputValue[MAX_LENGTH_OF_NUMBER];

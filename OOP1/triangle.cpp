@@ -18,7 +18,7 @@ double Triangle::getSquare() const {
 void Triangle::printInfo() const{
     std::cout << "Name = " << this->name;
     for(int i = 0; i < 3; i++){
-        std::cout << ", Point " << i+1 << ": ";
-        std::cout << this->point[i];
+        std::cout << ", Point " << i+1 << ": " << this->point[i];
     }
+    std::cout << std::endl;
 }

@@ -6,10 +6,11 @@
 #include "circle.h"
 #include "rectangle.h"
 #include "triangle.h"
+#include "polygon.h"
 #define MIN_CHOISE_FIRST 1
 #define MAX_CHOISE_FIRST 8
 #define MIN_CHOISE_SECOND 1
-#define MAX_CHOISE_SECOND 3
+#define MAX_CHOISE_SECOND 4
 
 ConsoleApp::ConsoleApp(){
     initializeMethodsOfChoisesMap();
@@ -20,6 +21,7 @@ void ConsoleApp::initializeMethodsOfShapesMap() {
     methodsOfShapesMap[1] = &ConsoleApp::createCircle;
     methodsOfShapesMap[2] = &ConsoleApp::createRectangle;
     methodsOfShapesMap[3] = &ConsoleApp::createTriangle;
+    methodsOfShapesMap[4] = &ConsoleApp::createPolygon;
 }
 
 void ConsoleApp::initializeMethodsOfChoisesMap(){
@@ -74,6 +76,7 @@ void ConsoleApp::deleteShapeByIndex() {
     int index;
     std::cout << "Input Index:\n";
     std::cin >> index;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     arrOfShapes.erase(arrOfShapes.begin() + index);
 }
 
@@ -81,6 +84,7 @@ void ConsoleApp::deleteShapesbySquare() {
     double squareSize;
     std::cout << "Input max square:\n";
     std::cin >> squareSize;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     for (int i = 0; i < arrOfShapes.size(); i++) {
         if (arrOfShapes[i]->getSquare() > squareSize) {
             arrOfShapes.erase(arrOfShapes.begin() + i);
@@ -97,7 +101,18 @@ void ConsoleApp::createCircle() {
     std::cin >> name;
     std::cin >> center;
     std::cin >> radius;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     addShape(new Circle(center, radius, name));
+}
+
+void ConsoleApp::createPolygon() {
+    int countOfPoints;
+    std::string name;
+    std::cout << "Input name and count of points: ";
+    std::cin >> name;
+    std::cin >> countOfPoints;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    addShape(new Polygon(countOfPoints, name));
 }
 
 void ConsoleApp::createTriangle() {
@@ -108,6 +123,7 @@ void ConsoleApp::createTriangle() {
     for(int i = 0; i < COUNT_OF_TRIANGLE_POINTS; i++){
         std::cin >> points[i];
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     addShape(new Triangle(points[0],points[1],points[2], name));
 }
 
@@ -119,6 +135,7 @@ void ConsoleApp::createRectangle() {
     for(int i = 0; i < COUNT_OF_RECTANGLE_POINTS; i++){
         std::cin >> points[i];
     }
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     addShape(new Rectangle(points[0],points[1], name));
 }
 
@@ -128,7 +145,9 @@ void ConsoleApp::secondChoise() {
     std::cout << "1: Circle\n";
     std::cout << "2: Rectangle\n";
     std::cout << "3: Triangle\n";
+    std::cout << "4: Polygon\n";
     std::cin >> choise;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     if (choise < MIN_CHOISE_SECOND || choise > MAX_CHOISE_SECOND)
         throw InvalidChoiceException("There are only 3 numbers). Pls choose one");
     auto it = methodsOfShapesMap.find(choise);

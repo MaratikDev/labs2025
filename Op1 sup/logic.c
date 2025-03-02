@@ -5,7 +5,7 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
     int isMinus = 0;
     enum ResultLogic result = Ok;
 
-    if(!(inputValue && inputSystem && outputSystem)){
+    if(!(strlen(inputValue) && inputSystem && outputSystem)){
             result = Empty;
         }
     else{

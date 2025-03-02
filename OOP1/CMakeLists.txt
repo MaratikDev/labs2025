@@ -14,7 +14,8 @@ add_executable(OOP1 main.cpp
     rectangle.h rectangle.cpp
     triangle.h triangle.cpp
     shape.cpp
-    exceptions.h )
+    exceptions.h
+    polygon.h polygon.cpp )
 
 include(GNUInstallDirs)
 install(TARGETS OOP1

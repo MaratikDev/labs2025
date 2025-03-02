@@ -7,16 +7,16 @@ class Vector;
 template <typename T>
 class Iterator {
 private:
-    Vector<T>& container_obj;
+    Vector<T>& containerObj;
     int index;
 public:
 
-    Iterator<T>(Vector<T>& container_obj);
+    Iterator<T>(Vector<T>& containerObj);
     Iterator<T> next();
     T& value();
-    bool is_end();
-    Iterator<T> &operator++(){
-        if (index < container_obj.get_length()) {
+    bool isEnd();
+    Iterator<T>& operator++(){
+        if (index < containerObj.getLength()) {
             index++;
         }
         return *this;

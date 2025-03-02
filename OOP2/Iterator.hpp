@@ -3,13 +3,13 @@
 #include "Iterator.h"
 
 template <typename T>
-Iterator<T>::Iterator(Vector<T>& container_obj): container_obj(container_obj) {
+Iterator<T>::Iterator(Vector<T>& containerObj): containerObj(containerObj) {
     this->index = 0;
 }
 
 template <typename T>
 Iterator<T> Iterator<T>::next() {
-    if (index < container_obj.get_length()) {
+    if (index < containerObj.getLength()) {
         index++;
     }
     return *this;
@@ -17,26 +17,26 @@ Iterator<T> Iterator<T>::next() {
 
 template <typename T>
 T& Iterator<T>::value() {
-    return this->container_obj.get_elem(index);
+    return this->containerObj.getElem(index);
 }
 
 template <typename T>
-bool Iterator<T>::is_end() {
-    return index >= container_obj.get_length();
+bool Iterator<T>::isEnd() {
+    return index >= containerObj.getLength();
 }
 
 
 template <typename T>
 T& Iterator<T>::operator*() {
-    return container_obj.get_elem(index);
+    return containerObj.getElem(index);
 }
 template <typename T>
 bool Iterator<T>::operator ==(Iterator<T>& b) {
-    return &container_obj == &b.container_obj && index == b.index;
+    return &containerObj == &b.containerObj && index == b.index;
 }
 
 template <typename T>
 bool Iterator<T>::operator !=(Iterator<T>& b) {
-    return !(&container_obj == &b.container_obj && index == b.index);
+    return !(&containerObj == &b.containerObj && index == b.index);
 }
 #endif // ITERATOR_HPP

@@ -36,7 +36,6 @@ private:
     void changeValuesClicked();
     std::string convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages);
     void showErrorMessage(const std::string& description);
-    std::map<enum ResultLogic, std::function<void()>> methodsOfErrorsMap;
     std::map<ResultLogic, char*> errorMessages;
 };
 #endif // MAINWINDOW_H

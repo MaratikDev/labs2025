@@ -1,9 +1,10 @@
 #ifndef VECTOR_H
 #define VECTOR_H
-
+#include "exceptions.h"
 #include <iostream>
 #include <initializer_list>
 #include "Iterator.h"
+#include "StaticIterator.h"
 
 template <typename T>
 class Vector {
@@ -18,10 +19,10 @@ public:
     Vector(const Vector<T>& vect);
     ~Vector();
 
-    int getLength();
+    int getLength() const;
     void setElem(int index, const T& elem);
 
-    T& getElem(int index);
+    T& getElem(int index) const;
     T* toArray();
     T& operator[](int index);
 
@@ -37,6 +38,8 @@ public:
     friend Vector<T> operator *(const Vector<T>& v1, const T& val);
     friend Vector<T> operator /(const Vector<T>& v1, const T& val);
     Iterator<T> begin();
+    StaticIterator<T> beginStatic();
+    StaticIterator<T> endStatic();
     Iterator<T> end();
 };
 #endif // VECTOR_H

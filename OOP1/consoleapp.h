@@ -28,6 +28,7 @@ private:
     void sortShapes();
     void deleteShapeByIndex();
     void deleteShapesbySquare();
+    void createPolygon();
     void createCircle();
     void createTriangle();
     void createRectangle();

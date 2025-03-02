@@ -11,8 +11,6 @@ double Circle::getSquare() const {
     return acos(-1) * radius * radius;
 }
 void Circle::printInfo() const{
-    std::cout << "Name = " << this->name;
-    std::cout << ", Center: " << this->center;
-    std::cout << ", Radius = " << this->radius << std::endl;
+    std::cout << "Name = " << this->name << ", Center: " << this->center << ", Radius = " << this->radius << std::endl;
 }
 
