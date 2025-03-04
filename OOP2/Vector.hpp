@@ -56,6 +56,13 @@ Vector<T>::Vector(const Vector<T>& vect) {
         this->arr[i] = vect.arr[i];
     }
 }
+template<typename T>
+Vector<T>::Vector(Vector<T>&& otherVect){
+    this->arr = otherVect.arr;
+    this->size = otherVect.size;
+    otherVect.arr = nullptr;
+    otherVect.size = 0;
+}
 
 template<typename T>
 Vector<T>::~Vector() {

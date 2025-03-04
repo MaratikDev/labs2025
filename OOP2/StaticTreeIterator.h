@@ -3,6 +3,7 @@
 #include <queue>
 #include "TreeNode.h"
 
+
 template <typename T>
 class BinaryTree;
 
@@ -14,8 +15,8 @@ private:
 
 public:
     StaticIteratorBinTree(const BinaryTree<T>& container_obj) : container_obj(container_obj) {
-        if (container_obj.root != nullptr) {
-            queue.push(container_obj.root);
+        if (container_obj.getRoot() != nullptr) {
+            queue.push(container_obj.getRoot());
         }
     }
 

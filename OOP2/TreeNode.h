@@ -1,9 +1,8 @@
 #ifndef TREENODE_H
 #define TREENODE_H
 template <typename T>
-struct TreeNode
+struct TreeNode //тк это структура то тут по дефолту паблик все
 {
-    // member vars
     T data;
     TreeNode<T>* left;
     TreeNode<T>* right;

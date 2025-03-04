@@ -26,8 +26,8 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
             if(inputSystem==outputSystem){
                 strncpy(context->outputValue, inputValue, MAX_LENGTH_OF_NUMBER - 1);
             }
-            else if((inputSystem == MIN_SYSTEM) && (outputSystem == DEFAULT_SYSTEM)){
-                strncpy(context->outputValue,fromBinaryToDecimal(inputValue, isMinus),MAX_LENGTH_OF_NUMBER - 1);
+            else if(outputSystem == DEFAULT_SYSTEM){
+                strncpy(context->outputValue,fromBinaryToDecimal(fromDecimal(toDecimal(inputValue, inputSystem, isMinus), MIN_SYSTEM)),MAX_LENGTH_OF_NUMBER - 1);
             }
             else{
                 if(isMinus){
@@ -90,7 +90,7 @@ char* fromDecimal(unsigned int decimal, int base) {
     strrev(result);
     return result;
 }
-char* fromBinaryToDecimal(const char* number, int isMinus){
+char* fromBinaryToDecimal(const char* number){
     unsigned int resultNumber = 0;
     int length = strlen(number);
     int digit;
@@ -98,10 +98,7 @@ char* fromBinaryToDecimal(const char* number, int isMinus){
         digit = number[i] - DIGIT_0;
         resultNumber += pow(MIN_SYSTEM, length - i - 1) * digit;
     }
-    if (isMinus) {
-        resultNumber = -resultNumber;
-    }
-    static char result[MAX_LENGTH_OF_NUMBER];
+    char* result = malloc(MAX_LENGTH_OF_NUMBER);
     snprintf(result, MAX_LENGTH_OF_NUMBER, "%d", resultNumber);
 
     return result;
@@ -131,6 +128,10 @@ int isValidNumber(const char* number, int base) {
         }
     }
     return result;
+}
+
+char* toBinary(const char* number, int base){
+
 }
 
 int findLengthOfNumber(int base){

@@ -7,18 +7,20 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+
+
 #ifdef __cplusplus
     extern "C" {
 #endif
 
     // Объявления функций
     void doOpenFile(AppContext* context, char* fileName);
-    void doLoadData(AppContext* context);
-    void doCalculateMetrics(AppContext* context, int columnIndex, char* filterRegion);
+    ResultLogic doLoadData(AppContext* context);
+    ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filterRegion);
     void doInitialize(AppContext* context);
-    RowData* loadDataFromCSV(AppContext* context);
+    ResultLogic loadDataFromCSV(AppContext* context);
     int compareDouble(const void* a, const void* b);
-
+    ResultLogic loadRowsFromCSV(AppContext* context, FILE* file);
 #ifdef __cplusplus
 }
 #endif

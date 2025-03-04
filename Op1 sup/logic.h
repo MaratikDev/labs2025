@@ -40,10 +40,11 @@ void saveInputSystem(struct AppContext* context, int inputSystem);
 void saveOutputSystem(struct AppContext* context, int outputSystem);
 void changeValues(struct AppContext* context);
 unsigned int toDecimal(const char* number, int base, int isMinus);
-char* fromBinaryToDecimal(const char* number,int isMinus);
+char* fromBinaryToDecimal(const char* number);
 char* fromDecimal(unsigned int decimal, int base);
 int isValidNumber(const char* number, int base);
 int findLengthOfNumber(int base);
+char* toBinary(const char* number, int base);
 #ifdef __cplusplus
 }
 #endif

@@ -45,17 +45,17 @@ void MainWindow::onConvertValueClicked() {
 
     ResultLogic result = doOperation(Convert, &context, &param);
     description = convertErrorToString(result, errorMessages);
-    showErrorMessage(description);
+    showErrorMessage(result);
     updateLabels();
 }
 std::string MainWindow::convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages){
     auto it = errorMessages.find(result);
     return it->second;
 }
-void MainWindow::showErrorMessage(const std::string& description){
-    if(description == "Ошибок нет")
+void MainWindow::showErrorMessage(ResultLogic result){
+    if(result == Ok)
         return;
-    QMessageBox::critical(this, "Ошибка", QString::fromStdString(description));
+    QMessageBox::critical(this, "Ошибка", QString::fromStdString(convertErrorToString(result, errorMessages)));
 }
 void MainWindow::onCopyClicked(){
     QClipboard *clipboard = QApplication::clipboard();

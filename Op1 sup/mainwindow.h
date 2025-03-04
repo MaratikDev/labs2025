@@ -35,7 +35,7 @@ private:
     void updateLabels();
     void changeValuesClicked();
     std::string convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages);
-    void showErrorMessage(const std::string& description);
+    void showErrorMessage(ResultLogic result);
     std::map<ResultLogic, char*> errorMessages;
 };
 #endif // MAINWINDOW_H

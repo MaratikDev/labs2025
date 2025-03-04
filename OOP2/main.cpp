@@ -84,6 +84,17 @@ void test_vector() {
     delete[] arr;
 
     std::cout << "All Vector tests passed!" << std::endl;
+
+    {
+        std::initializer_list<int> lst = {1, 2, 3, 4};
+        Vector<int> v1(lst);
+        Vector<int> v2 = std::move(v1);
+
+        assert(v1.getLength() == 0);
+        assert(v2.getElem(0) == 1);
+        assert(v2.getElem(1) == 2);
+        assert(v2.getElem(2) == 3);
+    }
 }
 
 void test_iterator() {
@@ -191,6 +202,17 @@ void testBinaryTree() {
         } catch (const DevideByZeroException& e) {
             assert(std::string(e.what()) == "dividing by 0");
         }
+    }
+    {
+        BinaryTree<int> tree;
+        tree.insert(10);
+        tree.insert(20);
+        BinaryTree<int> tree1 = std::move(tree);
+        assert(tree.getRoot() == nullptr);
+        int* arr = tree1.toArray();
+        assert(arr[0] == 10);
+        assert(arr[1] == 20);
+
     }
 
     std::cout << "All BinaryTree tests passed!" << std::endl;

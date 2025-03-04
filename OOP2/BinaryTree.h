@@ -11,8 +11,9 @@ template <typename T>
 class BinaryTree
 {
 public:
-    TreeNode<T>* root;
     BinaryTree();
+    BinaryTree<T>(BinaryTree<T>&& otherTree);
+    BinaryTree<T>(const BinaryTree<T>& otherTree);
     ~BinaryTree();
     friend std::ostream& operator << (std::ostream& os, const BinaryTree<T>& tree);
 
@@ -35,8 +36,10 @@ public:
     TreeNode<T>* copyTree(const TreeNode<T>* node) const;
     void multiply(TreeNode<T>* node, const T& val);
     void divide(TreeNode<T>* node, const T& val);
+    TreeNode<T>* getRoot() const ;
 
 private:
+    TreeNode<T>* root;
     //вспомогательные функции что б не приходилось как доп параметр this->root писать (умно)
     void insert(T value, TreeNode<T>*& node);
     bool contains(T value, TreeNode<T>* node);

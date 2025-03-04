@@ -81,43 +81,8 @@
        <number>0</number>
       </property>
       <property name="columnCount">
-       <number>7</number>
+       <number>0</number>
       </property>
-      <column>
-       <property name="text">
-        <string>Year</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Region</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Column 1</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Column 2</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Column 3</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Column 4</string>
-       </property>
-      </column>
-      <column>
-       <property name="text">
-        <string>Column 5</string>
-       </property>
-      </column>
      </widget>
     </item>
     <item>

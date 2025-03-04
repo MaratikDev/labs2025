@@ -16,6 +16,7 @@ public:
 
     Vector(int length);
     explicit Vector(std::initializer_list<T>& lst);
+    Vector<T>(Vector<T>&& otherVect);
     Vector(const Vector<T>& vect);
     ~Vector();
 

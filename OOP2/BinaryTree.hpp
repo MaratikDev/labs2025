@@ -12,6 +12,23 @@ BinaryTree<T>::~BinaryTree(){
     clear(root);
 }
 template<typename T>
+BinaryTree<T>::BinaryTree(BinaryTree<T>&& otherTree) {
+    root = otherTree.root;
+    otherTree.root = nullptr;
+}
+template<typename T>
+BinaryTree<T>::BinaryTree(const BinaryTree<T>& otherTree) {
+    if (this != &otherTree) {
+        clear(root);
+        root = copyTree(otherTree.root);
+    }
+    return *this;
+}
+template<typename T>
+TreeNode<T>* BinaryTree<T>::getRoot() const {
+    return root;
+}
+template<typename T>
 std::ostream& operator << (std::ostream& os, const BinaryTree<T>& tree){
     os << tree.treeAsString(tree.root);
     return os;

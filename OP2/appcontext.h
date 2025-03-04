@@ -31,6 +31,9 @@ typedef enum {
     MemoryFail,
     FileNotFound,
     WrongFormat,
-}ResultError;
+    Success,
+    InsultColumn,
+    NoCorrectRows
+}ResultLogic;
 
 #endif // APPCONTEXT_H

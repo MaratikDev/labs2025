@@ -22,7 +22,7 @@ typedef struct {
 
 // Единая точа входа - метод, являющийся прослойкой между слоем представления (Presentation)
 // и слоем (бизнес) логики приложения.
-void doOperation(Operation operation, AppContext* context, AppParams* params);
+ResultLogic doOperation(Operation operation, AppContext* context, AppParams* params);
 
 
 

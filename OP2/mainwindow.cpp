@@ -7,6 +7,15 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    errorMessages[Ok] = "Ошибок нет";
+    errorMessages[MemoryFail] = "Ошибка с выделением памяти";
+    errorMessages[FileNotFound] = "Проблема с нахождением файла";
+    errorMessages[WrongFormat] = "Что то не пошло не так....Неверный ввод или его отсутвие)";
+
+    errorMessages[Success] = "Ошибок нет";
+    errorMessages[InsultColumn] = "Столбцы метрик начинаются с 3 и их не больше чем в таблице)";
+    errorMessages[NoCorrectRows] = "Нет подходящих строк";
+
     // Волшебный метод генерирующий код
     ui->setupUi(this);
     initialize();
@@ -15,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFileButtonClicked);
     connect(ui->loadDataButton, &QPushButton::clicked, this, &MainWindow::onLoadDataButtonClicked);
     connect(ui->calculateMetricsButton, &QPushButton::clicked, this, &MainWindow::onCalculateMetricsButtonClicked);
+    updateLabels();
 }
 
 MainWindow::~MainWindow()
@@ -32,17 +42,15 @@ void MainWindow::onOpenFileButtonClicked() {
     ui->fileNameLabel->setText(filename);
     strncpy(param.filename, filename.toStdString().c_str(),MAX_FILENAME_LENGTH-1);
     doOperation(OpenFile, &context, &param);
+    updateLabels();
 }
 void MainWindow::onLoadDataButtonClicked() {
-    doOperation(LoadData, &context, NULL);
-    if (context.head == NULL) {
-        QMessageBox::warning(this, "Ошибка", "Не удалось загрузить данные из файла.");
-        return;
-    }
+    initialize(); //Иначе стобцы будут добавляться к существующим
+    std::string description;
+    ResultLogic result = doOperation(LoadData, &context, NULL);
     ui->tableWidget->clear();
     ui->tableWidget->setRowCount(0);
-    ui->tableWidget->setColumnCount(context.columnCount); // 7 колонок: год, регион и 5 метрик
-
+    ui->tableWidget->setColumnCount(context.columnCount);
 
     QStringList headers;
     for(int i = 0; i<context.columnCount;i++)
@@ -61,17 +69,37 @@ void MainWindow::onLoadDataButtonClicked() {
         current = current->next;
         row++;
     }
-    QMessageBox::information(this, "Success",
-                             QString("Данные успешно загружены.\nВсего строк считано: %1\nКорректных строк: %2\nНекорректных строк: %3")
-                                 .arg(context.totalRows)
-                                 .arg(context.correctRows)
-                                 .arg(context.inCorrectRows));
+    showErrorMessage(result);
+}
+
+std::string MainWindow::convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages){
+    auto it = errorMessages.find(result);
+    return it->second;
+}
+void MainWindow::showErrorMessage(ResultLogic result){
+    if(result == Ok){
+        QMessageBox::information(this, "Success",
+                                 QString("Данные успешно загружены.\nВсего строк считано: %1\nКорректных строк: %2\nНекорректных строк: %3")
+                                     .arg(context.totalRows)
+                                     .arg(context.correctRows)
+                                     .arg(context.inCorrectRows));
+    }
+    else if(result == Success){
+
+    }
+    else if(result == NoCorrectRows){
+        QMessageBox::warning(this,"Внимание", QString::fromStdString(convertErrorToString(result, errorMessages)));
+    }
+    else{
+        QMessageBox::critical(this, "Ошибка", QString::fromStdString(convertErrorToString(result, errorMessages)));
+    }
 }
 void MainWindow::onCalculateMetricsButtonClicked() {
     AppParams param;
     strncpy(param.filterRegion, ui->regionInput->text().toStdString().c_str(),MAX_REGION_LENGTH-1);
     param.columnIndex = ui->columnInput->text().toInt();
-    doOperation(CalculateMetrics, &context, &param);
+    ResultLogic result = doOperation(CalculateMetrics, &context, &param);
+    showErrorMessage(result);
     updateLabels();
 }
 

@@ -31,5 +31,8 @@ private:
     void onCalculateMetricsButtonClicked();
     void updateLabels();
     void initialize();
+    std::map<ResultLogic, char*> errorMessages;
+    std::string convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages);
+    void showErrorMessage(ResultLogic result);
 };
 #endif // MAINWINDOW_H
