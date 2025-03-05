@@ -77,6 +77,8 @@ void ConsoleApp::deleteShapeByIndex() {
     std::cout << "Input Index:\n";
     std::cin >> index;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (index < 0 || index > arrOfShapes.size())
+        throw InvalidChoiceException("Invalid index");
     arrOfShapes.erase(arrOfShapes.begin() + index);
 }
 

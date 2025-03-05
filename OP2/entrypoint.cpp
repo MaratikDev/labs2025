@@ -7,7 +7,7 @@ ResultLogic doOperation(Operation operation, AppContext* context, AppParams* par
         doOpenFile(context, params->filename);
         break;
     case LoadData:
-        result = doLoadData(context);
+        result = doLoadData(context, params->filterRegion);
         break;
     case CalculateMetrics:
         result = doCalculateMetrics(context, params->columnIndex, params->filterRegion);

@@ -45,9 +45,11 @@ void MainWindow::onOpenFileButtonClicked() {
     updateLabels();
 }
 void MainWindow::onLoadDataButtonClicked() {
+    AppParams param;
+    strncpy(param.filterRegion, ui->regionInput->text().toStdString().c_str(),MAX_REGION_LENGTH-1);
     initialize(); //Иначе стобцы будут добавляться к существующим
     std::string description;
-    ResultLogic result = doOperation(LoadData, &context, NULL);
+    ResultLogic result = doOperation(LoadData, &context, &param);
     ui->tableWidget->clear();
     ui->tableWidget->setRowCount(0);
     ui->tableWidget->setColumnCount(context.columnCount);

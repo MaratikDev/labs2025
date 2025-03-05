@@ -156,6 +156,18 @@ void testBinaryTree() {
         assert(tree.contains(6) == true);
         assert(tree.contains(8) == true);
         assert(tree.contains(10) == false);
+
+
+        //std::initializer
+        std::initializer_list<int>lst1 = {1};
+        BinaryTree<int> tree1(lst1);
+        assert(tree1.contains(1) == true);
+
+        std::initializer_list<int>lst2 = {1, 2, 3};
+        BinaryTree<int> tree2(lst2);
+        assert(tree2.contains(1) == true);
+        assert(tree2.contains(2) == true);
+        assert(tree2.contains(3) == true);
     }
 
     // remove

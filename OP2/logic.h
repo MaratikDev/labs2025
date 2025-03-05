@@ -15,12 +15,12 @@
 
     // Объявления функций
     void doOpenFile(AppContext* context, char* fileName);
-    ResultLogic doLoadData(AppContext* context);
+    ResultLogic doLoadData(AppContext* context, char* filterRegion);
     ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filterRegion);
     void doInitialize(AppContext* context);
-    ResultLogic loadDataFromCSV(AppContext* context);
+    ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion);
     int compareDouble(const void* a, const void* b);
-    ResultLogic loadRowsFromCSV(AppContext* context, FILE* file);
+    ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion);
 #ifdef __cplusplus
 }
 #endif

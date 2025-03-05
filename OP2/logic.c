@@ -15,13 +15,13 @@ void doOpenFile(AppContext* context, char* fileName){
     strncpy(context->filename,fileName,MAX_FILENAME_LENGTH-1);
     context->filename[MAX_FILENAME_LENGTH - 1] = '\0';
 }
-ResultLogic doLoadData(AppContext* context){
+ResultLogic doLoadData(AppContext* context, char* filterRegion){
     ResultLogic result = Ok;
     if (!strlen(context->filename)) {
         result = FileNotFound;
     }
     else{
-    result = loadDataFromCSV(context);
+    result = loadDataFromCSV(context, filterRegion);
     }
     return result;
 }
@@ -72,7 +72,7 @@ int compareDouble(const void* a, const void* b) {
     return 0;
 }
 
-ResultLogic loadRowsFromCSV(AppContext* context, FILE* file) {
+ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion) {
     ResultLogic result = Ok;
     RowData* tail = NULL;
     char line[1024];
@@ -106,6 +106,11 @@ ResultLogic loadRowsFromCSV(AppContext* context, FILE* file) {
             if (token && isCorrect) {
                 strncpy(newNode->region, token, MAX_REGION_LENGTH - 1);
                 newNode->region[MAX_REGION_LENGTH - 1] = '\0';
+                if((strlen(filterRegion) != 0) && (strcmp(filterRegion,newNode->region) != 0)){
+                    context->inCorrectRows++;
+                    free(newNode);
+                    isCorrect = 0;
+                }
             }
             else if (isCorrect) {
                 context->inCorrectRows++;
@@ -154,7 +159,7 @@ ResultLogic loadRowsFromCSV(AppContext* context, FILE* file) {
     return result;
 }
 
-ResultLogic loadDataFromCSV(AppContext* context) {
+ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion) {
     ResultLogic result = Ok;
     FILE* file = fopen(context->filename, "r");
     if (!file) {
@@ -194,7 +199,7 @@ ResultLogic loadDataFromCSV(AppContext* context) {
     }
 
     if (result == Ok) {
-        result = loadRowsFromCSV(context, file);
+        result = loadRowsFromCSV(context, file, filterRegion);
     }
 
     return result;
