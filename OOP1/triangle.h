@@ -8,13 +8,8 @@ public:
     Triangle(Point firstVertex, Point secondVertex, Point thirdVertex, std::string name);
     double getSquare() const override;
     void printInfo() const override;
-    friend std::ostream& operator << (std::ostream& os, const Triangle& triangle){
-        os << "Type = Triangle, ";
-        return os;
-    }
-    void print(std::ostream& os) const override {
-        os << *this;
-    }
+    friend std::ostream& operator << (std::ostream& os, const Triangle& triangle);
+    void print(std::ostream& os) const override;
 
 private:
     Point point[COUNT_OF_TRIANGLE_POINTS];

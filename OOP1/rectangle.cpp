@@ -12,5 +12,12 @@ double Rectangle::getSquare() const {
     return abs((temp.point[0].getXCoordinate() - temp.point[1].getXCoordinate()) * (temp.point[0].getXCoordinate() - temp.point[1].getXCoordinate()));
 }
 void Rectangle::printInfo() const{
-    std::cout << "Name = " << this->name << ", Left upper Point: " << this->point[0] << ", Right under Point: " << this->point[1] << std::endl;
+    std::cout << "Name = " << this->getName() << ", Left upper Point: " << this->point[0] << ", Right under Point: " << this->point[1] << std::endl;
+}
+std::ostream& operator << (std::ostream& os, const Rectangle& rectangle){
+    os << "Type = Rectangle, ";
+    return os;
+}
+void Rectangle::print(std::ostream& os) const  {
+    os << *this;
 }

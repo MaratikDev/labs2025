@@ -43,19 +43,19 @@ void MainWindow::onConvertValueClicked() {
         param.inputValue[0] = '\0';
     }
 
-    ResultLogic result = doOperation(Convert, &context, &param);
-    description = convertErrorToString(result, errorMessages);
+    ResultLogic result = doOperation(Convert, &context, NULL);
+    description = convertErrorToString(result);
     showErrorMessage(result);
     updateLabels();
 }
-std::string MainWindow::convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages){
+std::string MainWindow::convertErrorToString(ResultLogic result){
     auto it = errorMessages.find(result);
     return it->second;
 }
 void MainWindow::showErrorMessage(ResultLogic result){
     if(result == Ok)
         return;
-    QMessageBox::critical(this, "Ошибка", QString::fromStdString(convertErrorToString(result, errorMessages)));
+    QMessageBox::critical(this, "Ошибка", QString::fromStdString(convertErrorToString(result)));
 }
 void MainWindow::onCopyClicked(){
     QClipboard *clipboard = QApplication::clipboard();

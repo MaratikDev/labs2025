@@ -11,6 +11,12 @@ double Circle::getSquare() const {
     return acos(-1) * radius * radius;
 }
 void Circle::printInfo() const{
-    std::cout << "Name = " << this->name << ", Center: " << this->center << ", Radius = " << this->radius << std::endl;
+    std::cout << "Name = " << this->getName() << ", Center: " << this->center << ", Radius = " << this->radius << std::endl;
 }
-
+std::ostream& operator << (std::ostream& os, const Circle& circle){
+    os << "Type = Circle, ";
+    return os;
+}
+void Circle::print(std::ostream& os) const {
+    os << *this;
+}

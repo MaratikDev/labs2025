@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
-
+#include "exceptions.h"
 template <typename T>
 class BinaryTree
 {

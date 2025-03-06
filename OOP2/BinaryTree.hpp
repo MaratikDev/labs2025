@@ -22,7 +22,6 @@ BinaryTree<T>::BinaryTree(const BinaryTree<T>& otherTree) {
         clear(root);
         root = copyTree(otherTree.root);
     }
-    return *this;
 }
 template<typename T>
 TreeNode<T>* BinaryTree<T>::getRoot() const {

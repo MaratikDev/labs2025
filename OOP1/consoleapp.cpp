@@ -16,6 +16,19 @@ ConsoleApp::ConsoleApp(){
     initializeMethodsOfChoisesMap();
     initializeMethodsOfShapesMap();
 }
+template<typename T>
+T ConsoleApp::readValue(){
+    T value;
+    std::cin >> value;
+    if(std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        throw InvalidParameterException("error input");
+    }
+    return value;
+}
+
+
 
 void ConsoleApp::initializeMethodsOfShapesMap() {
     methodsOfShapesMap[1] = &ConsoleApp::createCircle;
@@ -32,11 +45,11 @@ void ConsoleApp::initializeMethodsOfChoisesMap(){
     methodsOfChoisesMap[5] = &ConsoleApp::sortShapes;
     methodsOfChoisesMap[6] = &ConsoleApp::deleteShapeByIndex;
     methodsOfChoisesMap[7] = &ConsoleApp::deleteShapesbySquare;
-    methodsOfChoisesMap[8] = &ConsoleApp::stopProgram;
+    methodsOfChoisesMap[8] = &ConsoleApp::stopApp;
 }
 
-void ConsoleApp::stopProgram(){
-    this->isRunning = Stop;
+void ConsoleApp::stopApp(){
+    this->appStatus = Stop;
 }
 
 void ConsoleApp::addShape(Shape* shape) {
@@ -75,18 +88,17 @@ void ConsoleApp::sortShapes() {
 void ConsoleApp::deleteShapeByIndex() {
     int index;
     std::cout << "Input Index:\n";
-    std::cin >> index;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    index = readValue<int>();
     if (index < 0 || index > arrOfShapes.size())
         throw InvalidChoiceException("Invalid index");
     arrOfShapes.erase(arrOfShapes.begin() + index);
 }
 
+
 void ConsoleApp::deleteShapesbySquare() {
     double squareSize;
     std::cout << "Input max square:\n";
-    std::cin >> squareSize;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    squareSize = readValue<double>();
     for (int i = 0; i < arrOfShapes.size(); i++) {
         if (arrOfShapes[i]->getSquare() > squareSize) {
             arrOfShapes.erase(arrOfShapes.begin() + i);
@@ -100,10 +112,9 @@ void ConsoleApp::createCircle() {
     double radius;
     std::string name;
     std::cout << "Input name and coordinates of center and radius: ";
-    std::cin >> name;
-    std::cin >> center;
-    std::cin >> radius;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    name = readValue<std::string>();
+    center = readValue<Point>();
+    radius = readValue<double>();
     addShape(new Circle(center, radius, name));
 }
 
@@ -111,9 +122,8 @@ void ConsoleApp::createPolygon() {
     int countOfPoints;
     std::string name;
     std::cout << "Input name and count of points: ";
-    std::cin >> name;
-    std::cin >> countOfPoints;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    name = readValue<std::string>();
+    countOfPoints = readValue<int>();;
     addShape(new Polygon(countOfPoints, name));
 }
 
@@ -121,11 +131,10 @@ void ConsoleApp::createTriangle() {
     Point points[COUNT_OF_TRIANGLE_POINTS];
     std::string name;
     std::cout << "Input name and coordinates of vertexes: ";
-    std::cin >> name;
+    name = readValue<std::string>();;
     for(int i = 0; i < COUNT_OF_TRIANGLE_POINTS; i++){
-        std::cin >> points[i];
+        points[i] = readValue<Point>();;
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     addShape(new Triangle(points[0],points[1],points[2], name));
 }
 
@@ -133,11 +142,10 @@ void ConsoleApp::createRectangle() {
     Point points[COUNT_OF_RECTANGLE_POINTS];
     std::string name;
     std::cout << "Input name and coordinates of vertexes: leftUpperVertex, rightUppervertex : ";
-    std::cin >> name;
+    name = readValue<std::string>();;
     for(int i = 0; i < COUNT_OF_RECTANGLE_POINTS; i++){
-        std::cin >> points[i];
+        points[i] = readValue<Point>();;
     }
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     addShape(new Rectangle(points[0],points[1], name));
 }
 
@@ -148,8 +156,7 @@ void ConsoleApp::secondChoise() {
     std::cout << "2: Rectangle\n";
     std::cout << "3: Triangle\n";
     std::cout << "4: Polygon\n";
-    std::cin >> choise;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    choise = readValue<int>();
     if (choise < MIN_CHOISE_SECOND || choise > MAX_CHOISE_SECOND)
         throw InvalidChoiceException("There are only 3 numbers). Pls choose one");
     auto it = methodsOfShapesMap.find(choise);
@@ -167,8 +174,7 @@ void ConsoleApp::firstChoise() {
     std::cout << "6: Delete shape by index\n";
     std::cout << "7: Delete shape if its square larger than input number\n";
     std::cout << "8: End program\n";
-    std::cin >> choise;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    choise = readValue<int>();
     if (choise < MIN_CHOISE_FIRST || choise > MAX_CHOISE_FIRST)
         throw InvalidChoiceException("There are only 8 numbers). Pls choose one");
     auto it = methodsOfChoisesMap.find(choise);
@@ -177,8 +183,8 @@ void ConsoleApp::firstChoise() {
 }
 
 void ConsoleApp::startApp() {
-    isRunning = Running;
-    while (isRunning) {
+    appStatus = Running;
+    while (appStatus) {
         try {
             firstChoise();
         } catch (const std::exception& e) {

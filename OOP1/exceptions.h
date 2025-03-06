@@ -17,9 +17,17 @@ private:
     std::string msg;
 };
 
-class InvalidChoiceException : public ShapeException {
+class InvalidChoiceException : public std::exception {
 public:
-    explicit InvalidChoiceException(const std::string& message) : ShapeException(message) {}
+    explicit InvalidChoiceException(const std::string& message){
+        this->msg = message;
+    }
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
 };
 
 

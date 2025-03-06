@@ -34,7 +34,7 @@ private:
     void onCopyClicked();
     void updateLabels();
     void changeValuesClicked();
-    std::string convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages);
+    std::string convertErrorToString(ResultLogic result);
     void showErrorMessage(ResultLogic result);
     std::map<ResultLogic, char*> errorMessages;
 };

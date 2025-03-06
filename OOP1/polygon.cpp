@@ -27,13 +27,13 @@ double Polygon::getSquare() const {
     double area = 0.0;
     for (int i = 0; i < countOfPoints; i++) {
         int j = (i + 1) % countOfPoints;
-        area += (point[i].xCoordinate * point[j].yCoordinate) - (point[j].xCoordinate * point[i].yCoordinate);
+        area += (point[i].getXCoordinate() * point[j].getYCoordinate()) - (point[j].getXCoordinate() * point[i].getYCoordinate());
     }
     return std::abs(area) / 2.0;
 }
 
 void Polygon::printInfo() const {
-    std::cout << "Name = " << this->name;
+    std::cout << "Name = " << this->getName();
     for (int i = 0; i < this->countOfPoints; i++) {
         std::cout << ", Point " << i + 1 << ": " << this->point[i];
     }
@@ -41,9 +41,16 @@ void Polygon::printInfo() const {
 }
 
 
-double Polygon::vectorMultiply(const Point& a, const Point& b, const Point& c) {
-    return (b.xCoordinate - a.xCoordinate) * (c.yCoordinate - a.yCoordinate) -
-           (b.yCoordinate - a.yCoordinate) * (c.xCoordinate - a.xCoordinate);
+double Polygon::vectorMultiply( Point& a,  Point& b,  Point& c)  {
+    return (b.getXCoordinate() - a.getXCoordinate()) * (c.getYCoordinate() - a.getYCoordinate()) -
+           (b.getYCoordinate() - a.getYCoordinate()) * (c.getXCoordinate() - a.getXCoordinate());
+}
+std::ostream& operator << (std::ostream& os, const Polygon& triangle){
+    os << "Type = Polygon, ";
+    return os;
+}
+void Polygon::print(std::ostream& os) const {
+    os << *this;
 }
 
 bool Polygon::isConvex() const {

@@ -16,9 +16,16 @@ double Triangle::getSquare() const {
                );
 }
 void Triangle::printInfo() const{
-    std::cout << "Name = " << this->name;
+    std::cout << "Name = " << this->getName();
     for(int i = 0; i < 3; i++){
         std::cout << ", Point " << i+1 << ": " << this->point[i];
     }
     std::cout << std::endl;
+}
+void Triangle::print(std::ostream& os) const  {
+    os << *this;
+}
+std::ostream& operator << (std::ostream& os, const Triangle& triangle){
+    os << "Type = Triangle, ";
+    return os;
 }

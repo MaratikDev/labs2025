@@ -8,13 +8,8 @@ public:
     Rectangle(Point firstVertex, Point secondVertex, std::string name);
     double getSquare() const override;
     void printInfo() const override;
-    friend std::ostream& operator << (std::ostream& os, const Rectangle& rectangle){
-        os << "Type = Rectangle, ";
-        return os;
-    }
-    void print(std::ostream& os) const override {
-        os << *this;
-    }
+    friend std::ostream& operator << (std::ostream& os, const Rectangle& rectangle);
+    void print(std::ostream& os) const override;
 
 private:
     Point point[COUNT_OF_RECTANGLE_POINTS];

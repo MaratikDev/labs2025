@@ -21,6 +21,7 @@
 #define DIGIT_Z 'Z'
 #define DIGIT_A_SMALL 'a'
 #define DIGIT_Z_SMALL 'z'
+#define MAX_INT 2147483648
 enum ResultLogic {
     Ok,
     OutOfFourBytes,
@@ -33,7 +34,7 @@ enum ResultLogic {
 extern "C" {
 #endif
 // Не забывайте что функции - это действия и должны описываться глаголами
-enum ResultLogic convert(struct AppContext* context, char* inputValue, int inputSystem, int outputSystem);
+enum ResultLogic convert(struct AppContext* context);
 void initialize(struct AppContext* context);
 void saveInputValue(struct AppContext* context, char* inputValue);
 void saveInputSystem(struct AppContext* context, int inputSystem);

@@ -10,6 +10,7 @@ public:
     double getYCoordinate();
     friend std::ostream& operator << (std::ostream& os, const Point& point);
     friend std::istream& operator >> (std::istream& is, Point& point);
+private:
     double xCoordinate;
     double yCoordinate;
 };

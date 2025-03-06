@@ -6,7 +6,7 @@
 #include <map>
 #include <functional>
 
-enum RunStatus {
+enum AppStatus {
     Stop,
     Running
 };
@@ -15,12 +15,12 @@ class ConsoleApp {
 public:
     ConsoleApp();
     void startApp();
-    void stopProgram();
+    void stopApp();
 private:
     std::vector<Shape*> arrOfShapes;
     std::map<int, void (ConsoleApp::*)()> methodsOfShapesMap;
     std::map<int, void (ConsoleApp::*)()> methodsOfChoisesMap;
-    RunStatus isRunning;
+    AppStatus appStatus;
     void addShape(Shape* shape);
     void printAllShapesInfo();
     void printAllShapesInfoAndSquare();
@@ -36,6 +36,9 @@ private:
     void firstChoise();
     void initializeMethodsOfShapesMap();
     void initializeMethodsOfChoisesMap();
+
+    template<typename T>
+    T readValue();
 };
 
 #endif // CONSOLEAPP_H

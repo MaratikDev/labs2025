@@ -5,11 +5,10 @@ ResultLogic doOperation(Operation operation, AppContext* context, AppParams* par
     ResultLogic result = Ok;
     switch(operation) {
     case Convert:
-        result = convert(context, params->inputValue, params->inputSystem, params->outputSystem);
+        result = convert(context);
         break;
     case Initialization:
         initialize(context);
-        result = Ok;
         break;
     case SaveInputValue:
         saveInputValue(context, params->inputValue);

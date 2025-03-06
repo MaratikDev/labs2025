@@ -8,14 +8,8 @@ public:
     Circle(Point center, double radius, std::string name);
     double getSquare() const override;
     void printInfo() const override;
-    friend std::ostream& operator << (std::ostream& os, const Circle& circle){
-        os << "Type = Circle, ";
-        return os;
-    }
-    void print(std::ostream& os) const override {
-        os << *this;
-    }
-
+    friend std::ostream& operator << (std::ostream& os, const Circle& circle);
+    void print(std::ostream& os) const override;
 private:
     Point center;
     double radius;

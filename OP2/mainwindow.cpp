@@ -100,6 +100,8 @@ void MainWindow::onCalculateMetricsButtonClicked() {
     AppParams param;
     strncpy(param.filterRegion, ui->regionInput->text().toStdString().c_str(),MAX_REGION_LENGTH-1);
     param.columnIndex = ui->columnInput->text().toInt();
+    onLoadDataButtonClicked();
+
     ResultLogic result = doOperation(CalculateMetrics, &context, &param);
     showErrorMessage(result);
     updateLabels();

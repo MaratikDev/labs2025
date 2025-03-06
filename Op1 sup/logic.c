@@ -1,9 +1,12 @@
 #include "logic.h"
 
 
-enum ResultLogic convert(struct AppContext* context, char* inputValue, int inputSystem, int outputSystem) {
+enum ResultLogic convert(struct AppContext* context) {
     int isMinus = 0;
     enum ResultLogic result = Ok;
+    char* inputValue =context->inputValue;
+    int inputSystem = context->inputSystem;
+    int outputSystem = context->outputSystem;
 
     if(!(strlen(inputValue) && inputSystem && outputSystem)){
             result = Empty;
@@ -12,6 +15,9 @@ enum ResultLogic convert(struct AppContext* context, char* inputValue, int input
 
         if (inputValue[0] == MINUS){
             isMinus = 1;
+        }
+        if(inputSystem==DEFAULT_SYSTEM && toDecimal(inputValue,DEFAULT_SYSTEM,0)>=MAX_INT){
+            result = UnacceptableNumber;
         }
         if((inputValue[0] == MINUS && inputSystem != DEFAULT_SYSTEM) || (!isValidNumber(inputValue, inputSystem))){
             result = UnacceptableNumber;
@@ -106,6 +112,7 @@ char* fromBinaryToDecimal(const char* number){
 
 int isValidNumber(const char* number, int base) {
     int result = 1;
+    int resultNumber = toDecimal(number,10,0);
     if(*number == MINUS){
         number++;
     }
@@ -127,6 +134,9 @@ int isValidNumber(const char* number, int base) {
             break;
         }
     }
+    if((resultNumber>=MAX_INT)&&(base==10)){
+        result = 0;
+    }
     return result;
 }
 
@@ -135,7 +145,7 @@ char* toBinary(const char* number, int base){
 }
 
 int findLengthOfNumber(int base){
-    return COUNT_OF_BIT_IN_NUMBER/ceil(log2(base));
+    return COUNT_OF_BIT_IN_NUMBER/floor(log2(base));
 }
 
 void saveInputValue(struct AppContext* context, char* inputValue){
