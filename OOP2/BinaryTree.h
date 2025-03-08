@@ -7,6 +7,7 @@
 #include <string>
 #include <queue>
 #include "exceptions.h"
+#include <fstream>
 template <typename T>
 class BinaryTree
 {
@@ -36,7 +37,9 @@ public:
     TreeNode<T>* copyTree(const TreeNode<T>* node) const;
     void multiply(TreeNode<T>* node, const T& val);
     void divide(TreeNode<T>* node, const T& val);
-    TreeNode<T>* getRoot() const ;
+    TreeNode<T>* getRoot() const;
+    TreeNode<T>* getRoot();
+    void printGraphViz(const std::string& filename);
 
 private:
     TreeNode<T>* root;
@@ -47,6 +50,7 @@ private:
     TreeNode<T>* findMin(TreeNode<T>* node);
     std::string treeAsString(const TreeNode<T>* node) const;
     void clear(TreeNode<T>* node);
+    void printGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile);
 
 
 };

@@ -4,9 +4,9 @@
 #include <string>
 
 
-class ShapeException : public std::exception {
+class InvalidTypeException : public std::exception {
 public:
-    explicit ShapeException(const std::string& message){
+    explicit InvalidTypeException(const std::string& message){
         this->msg = message;
     }
     const char* what() const noexcept override {
@@ -17,19 +17,57 @@ private:
     std::string msg;
 };
 
-class InvalidTypeException : public ShapeException {
+class OutOfIndexException : public std::exception {
 public:
-    explicit InvalidTypeException(const std::string& message) : ShapeException(message) {}
+    explicit OutOfIndexException(const std::string& message){
+        this->msg = message;
+    }
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
+};
+
+class DevideByZeroException : public std::exception {
+public:
+    explicit DevideByZeroException(const std::string& message){
+        this->msg = message;
+    }
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
+};
+
+class FileException : public std::exception {
+public:
+    explicit FileException(const std::string& message){
+        this->msg = message;
+    }
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
 };
 
 
-class OutOfIndexException : public ShapeException {
+class EmptyException : public std::exception {
 public:
-    explicit OutOfIndexException(const std::string& message) : ShapeException(message) {}
+    explicit EmptyException(const std::string& message){
+        this->msg = message;
+    }
+    const char* what() const noexcept override {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
 };
 
-class DevideByZeroException : public ShapeException {
-public:
-    explicit DevideByZeroException(const std::string& message) : ShapeException(message) {}
-};
 #endif // EXCEPTIONS_H

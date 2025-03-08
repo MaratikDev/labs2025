@@ -1,9 +1,46 @@
 #ifndef BINARYTREE_HPP
 #define BINARYTREE_HPP
 #include "BinaryTree.h"
+#include <iostream>
+#include <fstream>
+#include <filesystem>
 
+template<typename T>
+void BinaryTree<T>::printGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile) {
+    if (node == nullptr) {
+        return;
+    }
 
+    if (node->left != nullptr) {
+        dotFile << node->data << "->" << node->left->data << ";\n";
+        printGraphVizHelper(node->left, dotFile); // Рекурсивный обход левого поддерева
+    }
+    if (node->right != nullptr) {
+        dotFile << node->data << "->" << node->right->data << ";\n";
+        printGraphVizHelper(node->right, dotFile); // Рекурсивный обход правого поддерева
+    }
+}
 
+template<typename T>
+void BinaryTree<T>::printGraphViz(const std::string& filename){
+    std::ofstream dotFile(filename);
+    if (!dotFile.is_open()) {
+        throw FileException ("Failed to open file: ");
+        return;
+    }
+
+    TreeNode<T>* current = getRoot();
+    if (current == nullptr) {
+        throw EmptyException ("Tree is empty!");
+        dotFile.close();
+        return;
+    }
+
+    dotFile << "digraph MyGraph {\n";
+    printGraphVizHelper(current, dotFile);
+    dotFile << "}\n";
+    dotFile.close();
+}
 template<typename T>
 BinaryTree<T>::BinaryTree() : root(nullptr){}
 
@@ -240,6 +277,10 @@ std::string BinaryTree<T>::treeAsString(const TreeNode<T>* node) const  {
     }
 
     return "{" + nodeDataStr + ", " + leftStr + ", " + rightStr + "}";
+}
+template<typename T>
+TreeNode<T>* BinaryTree<T>::getRoot(){
+    return root;
 }
 template<typename T>
 void BinaryTree<T>::clear(TreeNode<T>* node) {

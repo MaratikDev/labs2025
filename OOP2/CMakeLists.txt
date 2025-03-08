@@ -21,6 +21,7 @@ add_executable(OOP2 main.cpp
     StaticTreeIterator.h
     StaticIterator.h
     StaticIterator.hpp
+    StaticTreeIterator.hpp
 
 
 

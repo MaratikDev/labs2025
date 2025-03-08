@@ -15,12 +15,7 @@ public:
     Iterator<T> next();
     T& value();
     bool isEnd();
-    Iterator<T>& operator++(){
-        if (index < containerObj.getLength()) {
-            index++;
-        }
-        return *this;
-    }
+    Iterator<T>& operator++();
     T& operator*();
     bool operator ==(Iterator<T>& b);
     bool operator !=(Iterator<T>& b);

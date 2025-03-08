@@ -5,7 +5,7 @@
 #include <initializer_list>
 #include "Iterator.h"
 #include "StaticIterator.h"
-
+#include <fstream>
 template <typename T>
 class Vector {
 private:
@@ -42,5 +42,6 @@ public:
     StaticIterator<T> beginStatic();
     StaticIterator<T> endStatic();
     Iterator<T> end();
+    void printGraphViz(const std::string& filename);
 };
 #endif // VECTOR_H

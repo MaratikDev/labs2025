@@ -16,6 +16,23 @@ Iterator<T> Vector<T>::end(){
 }
 
 template<typename T>
+void Vector<T>::printGraphViz(const std::string& filename){
+    std::ofstream dotFile(filename);
+    if (!dotFile.is_open()) {
+        throw FileException ("Failed to open file: ");
+        return;
+    }
+
+
+    dotFile << "digraph MyGraph {\n";
+    for(int i = 0;i<getLength()-1;i++){
+        dotFile << arr[i] << "->" << arr[i+1] << ";\n";
+    }
+    dotFile << "}\n";
+    dotFile.close();
+}
+
+template<typename T>
 StaticIterator<T> Vector<T>::beginStatic(){
     return StaticIterator<T>(*this);
 }
@@ -33,7 +50,7 @@ Vector<T>::Vector(int length) {
     if(length <= 0)
         throw OutOfIndexException("cant make vector with this size");
     this->size = length;
-    this->arr = new T[size];
+    this->arr = new T[size](); //скобки чтобы все элементы были 0 изначально
 }
 
 template<typename T>

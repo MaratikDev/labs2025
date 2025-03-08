@@ -2,7 +2,7 @@
 #define STATICTREEITERATOR_H
 #include <queue>
 #include "TreeNode.h"
-
+#include "exceptions.h"
 
 template <typename T>
 class BinaryTree;
@@ -14,48 +14,13 @@ private:
     std::queue<const TreeNode<T>*> queue;
 
 public:
-    StaticIteratorBinTree(const BinaryTree<T>& container_obj) : container_obj(container_obj) {
-        if (container_obj.getRoot() != nullptr) {
-            queue.push(container_obj.getRoot());
-        }
-    }
-
-
-    StaticIteratorBinTree<T> next() {
-        if (!queue.empty()) {
-            const TreeNode<T>* current = queue.front();
-            queue.pop();
-
-            if (current->left != nullptr) {
-                queue.push(current->left);
-            }
-            if (current->right != nullptr) {
-                queue.push(current->right);
-            }
-        }
-        return *this;
-    }
-    const T& value() const {
-        if (!queue.empty()) {
-            return queue.front()->data;
-        }
-        throw ("Iterator is at the end");
-    }
-    bool is_end() const {
-        return queue.empty();
-    }
-    StaticIteratorBinTree<T>& operator++() {
-        next();
-        return *this;
-    }
-    const T& operator*() const {
-        return value();
-    }
-    bool operator==(const StaticIteratorBinTree<T>& b) const {
-        return &container_obj == &b.container_obj && queue == b.queue;
-    }
-    bool operator!=(const StaticIteratorBinTree<T>& b) const {
-        return !(*this == b);
-    }
+    StaticIteratorBinTree(const BinaryTree<T>& container_obj);
+    StaticIteratorBinTree<T> next();
+    const T& value() const ;
+    bool is_end() const;
+    StaticIteratorBinTree<T>& operator++();
+    const T& operator*() const;
+    bool operator==(const StaticIteratorBinTree<T>& b) const;
+    bool operator!=(const StaticIteratorBinTree<T>& b) const;
 };
 #endif // STATICTREEITERATOR_H

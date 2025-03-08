@@ -39,4 +39,11 @@ template <typename T>
 bool Iterator<T>::operator !=(Iterator<T>& b) {
     return !(&containerObj == &b.containerObj && index == b.index);
 }
+template <typename T>
+Iterator<T>& Iterator<T>::operator++(){
+    if (index < containerObj.getLength()) {
+        index++;
+    }
+    return *this;
+}
 #endif // ITERATOR_HPP

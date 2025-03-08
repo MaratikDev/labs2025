@@ -39,4 +39,11 @@ template <typename T>
 bool StaticIterator<T>::operator !=(StaticIterator<T>& b) const{
     return !(&containerObj == &b.containerObj && index == b.index);
 }
+template <typename T>
+StaticIterator<T>& StaticIterator<T>::operator++() {
+    if (index < containerObj.getLength()) {
+        index++;
+    }
+    return *this;
+}
 #endif // STATICITERATOR_HPP

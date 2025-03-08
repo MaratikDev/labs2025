@@ -1,11 +1,11 @@
 #ifndef ITERATORBINTREE_HPP
 #define ITERATORBINTREE_HPP
 #include "IteratorBinTree.h"
-/*
+
 template <typename T>
 IteratorBinTree<T>::IteratorBinTree(BinaryTree<T>& container_obj): container_obj(container_obj) {
-    if (container_obj.root != nullptr) {
-        queue.push(container_obj.root);
+    if (container_obj.getRoot() != nullptr) {
+        queue.push(container_obj.getRoot());
     }
 }
 template <typename T>
@@ -28,7 +28,7 @@ T& IteratorBinTree<T>::value() {
     if (!queue.empty()) {
         return queue.front()->data;
     }
-    throw ("Iterator is at the end");
+    throw EmptyException("Iterator is at the end");
 }
 template <typename T>
 bool IteratorBinTree<T>::is_end() {
@@ -36,7 +36,7 @@ bool IteratorBinTree<T>::is_end() {
 }
 
 template <typename T>
-T& IteratorBinTree<T>::operator*()  {
+T& IteratorBinTree<T>::operator*() {
     return value();
 }
 template <typename T>
@@ -47,6 +47,11 @@ template <typename T>
 bool IteratorBinTree<T>::operator !=(IteratorBinTree<T>& b) {
     return !(*this == b);
 }
-*/
+template <typename T>
+IteratorBinTree<T>& IteratorBinTree<T>::operator++() {
+    next();
+    return *this;
+}
 
-#endif // ITERATORBINTREE_H
+
+#endif // ITERATORBINTREE_HPP

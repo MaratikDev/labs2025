@@ -4,6 +4,7 @@
 #include <QMessageBox>
 #include <QLineSeries>
 #include <string.h>
+#include <QValueAxis>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -98,6 +99,7 @@ void MainWindow::showErrorMessage(ResultLogic result){
     }
 }
 void MainWindow::onCalculateMetricsButtonClicked() {
+    onLoadDataButtonClicked();
     AppParams param;
     strncpy(param.filterRegion, ui->regionInput->text().toStdString().c_str(),MAX_REGION_LENGTH-1);
     param.columnIndex = ui->columnInput->text().toInt();
@@ -106,11 +108,19 @@ void MainWindow::onCalculateMetricsButtonClicked() {
     if(resultMetric == Success){
         QLineSeries* series = new QLineSeries();
         for(int i = 0; i<context.countOfData;i++){
-            series->append(context.yearsDraw[i],context.metricsDraw[i]);
+            series->append(context.yearsDraw[i],context.metricsDraw[i]);            //сделать как во 2 оп чтобы оставались только выделенные регионы(просто вызвать функцию loaddata)
         }
         series->setName(param.filterRegion);
-        ui->chartView->chart()->addSeries(series);
-        ui->chartView->chart()->createDefaultAxes();
+
+        QChart* chart = new QChart();
+        chart->addSeries(series);
+        chart->createDefaultAxes();
+
+        QValueAxis* axisX = qobject_cast<QValueAxis*>(chart->axes(Qt::Horizontal).first());
+        axisX->setLabelFormat("%d");
+
+        ui->chartView->setChart(chart);
+        ui->chartView->setRenderHint(QPainter::Antialiasing);
         updateLabels();
     }
 }

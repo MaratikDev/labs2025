@@ -16,11 +16,6 @@ public:
     const T& operator*() const;
     bool operator ==(StaticIterator<T>& b) const;
     bool operator !=(StaticIterator<T>& b) const;
-    StaticIterator<T>& operator++() {
-        if (index < containerObj.getLength()) {
-            index++;
-        }
-        return *this;
-    }
+    StaticIterator<T>& operator++();
 };
 #endif // STATICITERATOR_H

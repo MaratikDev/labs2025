@@ -30,7 +30,7 @@ ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filte
     context->min = 0;
     context->max = 0;
     context->median = 0;
-    if (columnIndex < 3 || columnIndex > context->columnCount) {//отсчет идет с года, но если с года то columnIndex < 1 || columnIndex >= context->columnCount
+    if (columnIndex < 3 || columnIndex > context->columnCount) {//отсчет идет с года, но если с метрик то columnIndex < 1 || columnIndex >= context->columnCount
         result = InsultColumn;
     }
     else{
@@ -65,9 +65,9 @@ ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filte
 int compareDouble(const void* a, const void* b) {
     double arg1 = *(const double*)a;
     double arg2 = *(const double*)b;
-    if (arg1 < arg2)
+    if (arg2 - arg1 > EPS)
         return -1;
-    if (arg1 > arg2)
+    if (arg1 - arg2 > EPS)
         return 1;
     return 0;
 }
