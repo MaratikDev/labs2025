@@ -6,24 +6,31 @@
 #include <filesystem>
 
 template<typename T>
-void BinaryTree<T>::printGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile) {
+void BinaryTree<T>::generateGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile) {
     if (node == nullptr) {
         return;
     }
 
     if (node->left != nullptr) {
         dotFile << node->data << "->" << node->left->data << ";\n";
-        printGraphVizHelper(node->left, dotFile); // Рекурсивный обход левого поддерева
+        generateGraphVizHelper(node->left, dotFile); // Рекурсивный обход левого поддерева
     }
     if (node->right != nullptr) {
         dotFile << node->data << "->" << node->right->data << ";\n";
-        printGraphVizHelper(node->right, dotFile); // Рекурсивный обход правого поддерева
+        generateGraphVizHelper(node->right, dotFile); // Рекурсивный обход правого поддерева
     }
+}
+template<typename T>
+int BinaryTree<T>::showGraph(const std::string& filename){
+    const std::string cmdRequest = "dot -Tpng " +filename+".dot -o"+filename+".png";
+    system(cmdRequest.c_str());
+    const std::string cmdRequest1 = "start "+filename+".png";
+    return system(cmdRequest1.c_str());
 }
 
 template<typename T>
-void BinaryTree<T>::printGraphViz(const std::string& filename){
-    std::ofstream dotFile(filename);
+void BinaryTree<T>::generateGraphViz(const std::string& filename){
+    std::ofstream dotFile(filename+".dot");
     if (!dotFile.is_open()) {
         throw FileException ("Failed to open file: ");
         return;
@@ -37,7 +44,7 @@ void BinaryTree<T>::printGraphViz(const std::string& filename){
     }
 
     dotFile << "digraph MyGraph {\n";
-    printGraphVizHelper(current, dotFile);
+    generateGraphVizHelper(current, dotFile);
     dotFile << "}\n";
     dotFile.close();
 }
@@ -90,19 +97,12 @@ BinaryTree<T>::BinaryTree(std::initializer_list<T>& lst): root(nullptr){
 }
 template<typename T>
 T* BinaryTree<T>::toArray(){
+    IteratorBinTree<T> iter = this->begin();
     std::vector<T> elements;
-    std::queue<TreeNode<T>*> queue;
-    if (root) queue.push(root);
-
-    while (!queue.empty()) {
-        TreeNode<T>* node = queue.front();
-        queue.pop();
-        elements.push_back(node->data);
-
-        if (node->left) queue.push(node->left);
-        if (node->right) queue.push(node->right);
+    while(!iter.is_end()){
+        elements.push_back(iter.value());
+        iter.next();
     }
-
     T* result = new T[elements.size()];
     std::copy(elements.begin(), elements.end(), result);
     return result;
@@ -265,18 +265,24 @@ std::string BinaryTree<T>::treeAsString(const TreeNode<T>* node) const  {
 
     std::string leftStr = treeAsString(node->left);
     std::string rightStr = treeAsString(node->right);
+    std::string nodeDataStr = treeAsStringHelper(node->data);
 
-    // Преобразуем данные узла в строку
-    std::string nodeDataStr;
-    if (typeid(T) == typeid(std::string)) {
-        nodeDataStr = node->data;
-    } else if (typeid(T) == typeid(char)) {
-        nodeDataStr = std::string(1, node->data);
-    } else {
-        nodeDataStr = std::to_string(node->data);
-    }
 
     return "{" + nodeDataStr + ", " + leftStr + ", " + rightStr + "}";
+}
+template <typename T>
+std::string BinaryTree<T>::treeAsStringHelper(const T& data) {
+    return std::to_string(data);
+}
+
+template <typename T>
+std::string BinaryTree<T>::treeAsStringHelper(const std::string& data) {
+    return data;
+}
+
+template <typename T>
+std::string BinaryTree<T>::treeAsStringHelper(const char& data) {
+    return std::string(1, data);
 }
 template<typename T>
 TreeNode<T>* BinaryTree<T>::getRoot(){

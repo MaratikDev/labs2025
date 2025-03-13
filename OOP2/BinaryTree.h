@@ -39,7 +39,8 @@ public:
     void divide(TreeNode<T>* node, const T& val);
     TreeNode<T>* getRoot() const;
     TreeNode<T>* getRoot();
-    void printGraphViz(const std::string& filename);
+    void generateGraphViz(const std::string& filename);
+    int showGraph(const std::string& filename);
 
 private:
     TreeNode<T>* root;
@@ -50,7 +51,14 @@ private:
     TreeNode<T>* findMin(TreeNode<T>* node);
     std::string treeAsString(const TreeNode<T>* node) const;
     void clear(TreeNode<T>* node);
-    void printGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile);
+    void generateGraphVizHelper(TreeNode<T>* node, std::ofstream& dotFile);
+    std::string treeAsStringHelper(const T& data);
+    std::string treeAsStringHelper(const std::string& data);
+    std::string treeAsStringHelper(const char& data);
+
+
+
+
 
 
 };

@@ -42,6 +42,7 @@ public:
     StaticIterator<T> beginStatic();
     StaticIterator<T> endStatic();
     Iterator<T> end();
-    void printGraphViz(const std::string& filename);
+    void generateGraphViz(const std::string& filename);
+    int showGraph(const std::string& filename);
 };
 #endif // VECTOR_H

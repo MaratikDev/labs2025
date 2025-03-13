@@ -60,7 +60,7 @@ void MainWindow::onLoadDataButtonClicked() {
 
     ui->tableWidget->setHorizontalHeaderLabels(headers);
     RowData* current = context.head;
-    int row = 0;
+    for(int row = 0;current!=NULL;row++,current = current->next)
     while (current != NULL) {
         ui->tableWidget->insertRow(row);
         ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(current->year)));

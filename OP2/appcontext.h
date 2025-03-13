@@ -10,6 +10,7 @@ typedef struct RowData{
     int year;
     char region[MAX_REGION_LENGTH];
     double* metrics;
+    void* data;
     struct RowData *next;
 }RowData;
 
@@ -19,7 +20,6 @@ typedef struct {
     int totalRows;
     int correctRows;
     int inCorrectRows;
-    int currentRow;
     double min;
     double max;
     double median;

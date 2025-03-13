@@ -16,8 +16,8 @@ Iterator<T> Vector<T>::end(){
 }
 
 template<typename T>
-void Vector<T>::printGraphViz(const std::string& filename){
-    std::ofstream dotFile(filename);
+void Vector<T>::generateGraphViz(const std::string& filename){
+    std::ofstream dotFile(filename+".dot");
     if (!dotFile.is_open()) {
         throw FileException ("Failed to open file: ");
         return;
@@ -30,6 +30,13 @@ void Vector<T>::printGraphViz(const std::string& filename){
     }
     dotFile << "}\n";
     dotFile.close();
+}
+template<typename T>
+int Vector<T>::showGraph(const std::string& filename){
+    const std::string cmdRequest = "dot -Tpng " +filename+".dot -o "+filename+".png";
+    system(cmdRequest.c_str());
+    const std::string cmdRequest1 = "start "+filename+".png";
+    return system(cmdRequest1.c_str());
 }
 
 template<typename T>

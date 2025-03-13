@@ -305,16 +305,18 @@ int main() {
 
 
     std::cout << "All tests passed!" << std::endl;
-    //std::initializer_list<int> lst = {5,4,7,2,6,9};
-    //BinaryTree<int> b(lst);
-    std::string dotFilename = "graph.dot";
+    std::initializer_list<int> lst = {5,4,7,2,6,9};
+    BinaryTree<int> b(lst);
+    std::string dotFilename = "graph";
     Vector<int> a(4);
     a.setElem(0,1);
-    a.setElem(1,6);
+    a.setElem(1,99);
     a.setElem(2,3);
-    //a.setElem(3,4);
-    a.printGraphViz(dotFilename);
-    //b.printGraphViz(dotFilename);
+    a.setElem(3,4);
+    //a.generateGraphViz(dotFilename);
+    //a.showGraph(dotFilename);
+    b.generateGraphViz(dotFilename);
+    b.showGraph(dotFilename);
     return 0;
 }
 
