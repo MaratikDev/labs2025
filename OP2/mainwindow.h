@@ -34,5 +34,7 @@ private:
     std::map<ResultLogic, char*> errorMessages;
     std::string convertErrorToString(ResultLogic result, std::map<ResultLogic, char*>& errorMessages);
     void showErrorMessage(ResultLogic result);
+    void refreshTable();
+    void regionChanged();
 };
 #endif // MAINWINDOW_H

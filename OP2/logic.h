@@ -21,6 +21,7 @@
     ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion);
     int compareDouble(const void* a, const void* b);
     ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion);
+    void changeFilterRegion(AppContext* context, char* filterRegion);
 #ifdef __cplusplus
 }
 #endif

@@ -15,7 +15,10 @@ ResultLogic doOperation(Operation operation, AppContext* context, AppParams* par
     case Initialize:
         doInitialize(context);
         break;
+    case SaveFilterRegion:
+        changeFilterRegion(context, params->filterRegion);
     }
+
     return result;//добавить инициализацию для контекста
 }
 
