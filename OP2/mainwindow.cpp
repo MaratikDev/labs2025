@@ -120,7 +120,7 @@ void MainWindow::refreshTable(){
     ui->tableWidget->setHorizontalHeaderLabels(headers);
     RowData* current = context.head;
     for(int row = 0;current!=NULL;row++,current = current->next){
-        if(strlen(context.filterRegion) == 0 || strcmp(context.filterRegion,current->data[REGION_INDEX])== 0 ){
+        if(strlen(context.filterRegion) == 0 || strcmp(context.filterRegion,(char*)current->data[REGION_INDEX])== 0 ){
             ui->tableWidget->insertRow(row);
             for (int i = 0; i < (context.tableLogic.columnCount); i++) {
                 ui->tableWidget->setItem(row, i, new QTableWidgetItem(QString::fromUtf8((char*)current->data[i])));

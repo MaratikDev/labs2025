@@ -42,6 +42,7 @@ ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filte
         RowData* current = context->head;
         int count = 0;
         char* endptr;
+        double value;
         double* values = (double*)malloc(context->tableMetrics.correctRows * sizeof(double));
         if (!values) {
             result = MemoryFail;
@@ -49,8 +50,10 @@ ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filte
         else {
             while (current != NULL) {
                 if (strcmp((char*)current->data[1], filterRegion) == 0) {
-                    values[count] = strtod(current->data[columnIndex-1],&endptr);
+                    value = strtod(current->data[columnIndex-1],&endptr);// втррой параметр ссылка на оставшкюся часть строки кторую не удалось преобразовть
+                    values[count] = value;
                     count++;
+
                 }
                 current = current->next;
             }
@@ -101,7 +104,7 @@ ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion)
             char* token = strtok(line, ",");
 
             // Выделяем память для массива data (char**)
-            newNode->data = (char**)malloc(context->tableLogic.columnCount * sizeof(char*));
+            newNode->data = (void**)malloc(context->tableLogic.columnCount * sizeof(void*));
             if (!newNode->data) {
                 result = MemoryFail;
                 free(newNode);

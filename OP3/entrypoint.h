@@ -10,7 +10,8 @@ enum Operation {
     OpenFile,
     LoadData,
     CalculateMetrics,
-    Initialize
+    Initialize,
+    SaveFilterRegion
 };
 
 // Структура, описывающая дополнительные поля-значения, необходимые для выполнения операции

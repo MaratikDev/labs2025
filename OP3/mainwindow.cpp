@@ -2,21 +2,12 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QLineSeries>
 #include <string.h>
-#include <QValueAxis>
+#include <stdlib.h>
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    errorMessages[Ok] = "Ошибок нет";
-    errorMessages[MemoryFail] = "Ошибка с выделением памяти";
-    errorMessages[FileNotFound] = "Проблема с нахождением файла";
-    errorMessages[WrongFormat] = "Что то не пошло не так....Неверный ввод или его отсутвие)";
-
-    errorMessages[Success] = "Ошибок нет";
-    errorMessages[InsultColumn] = "Столбцы метрик начинаются с 3 и их не больше чем в таблице)";
-    errorMessages[NoCorrectRows] = "Нет подходящих строк";
 
     // Волшебный метод генерирующий код
     ui->setupUi(this);
@@ -26,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->openFileButton, &QPushButton::clicked, this, &MainWindow::onOpenFileButtonClicked);
     connect(ui->loadDataButton, &QPushButton::clicked, this, &MainWindow::onLoadDataButtonClicked);
     connect(ui->calculateMetricsButton, &QPushButton::clicked, this, &MainWindow::onCalculateMetricsButtonClicked);
+    connect(ui->regionInput, &QLineEdit::textChanged, this, &MainWindow::regionChanged);
     updateLabels();
 }
 
@@ -36,6 +28,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::initialize(){
     doOperation(Initialize, &context, NULL);
+    errorMessages[Ok] = "Ошибок нет";
+    errorMessages[MemoryFail] = "Ошибка с выделением памяти";
+    errorMessages[FileNotFound] = "Проблема с нахождением файла";
+    errorMessages[WrongFormat] = "Что то не пошло не так....Неверный ввод или его отсутвие)";
+
+    errorMessages[SuccessMetricCalculated] = "Ошибок нет";
+    errorMessages[InsultColumn] = "Столбцы метрик начинаются с 3 и их не больше чем в таблице)";
+    errorMessages[NoCorrectRows] = "Нет подходящих строк";
 }
 
 void MainWindow::onOpenFileButtonClicked() {
@@ -52,27 +52,7 @@ void MainWindow::onLoadDataButtonClicked() {
     initialize(); //Иначе стобцы будут добавляться к существующим
     std::string description;
     ResultLogic result = doOperation(LoadData, &context, &param);
-    ui->tableWidget->clear();
-    ui->tableWidget->setRowCount(0);
-    ui->tableWidget->setColumnCount(context.columnCount);
-
-    QStringList headers;
-    for(int i = 0; i<context.columnCount;i++)
-        headers << context.columnName[i];
-
-    ui->tableWidget->setHorizontalHeaderLabels(headers);
-    RowData* current = context.head;
-    int row = 0;
-    while (current != NULL) {
-        ui->tableWidget->insertRow(row);
-        ui->tableWidget->setItem(row, 0, new QTableWidgetItem(QString::number(current->year)));
-        ui->tableWidget->setItem(row, 1, new QTableWidgetItem(QString::fromUtf8(current->region)));
-        for (int i = 0; i < context.columnCount-2; i++) {
-            ui->tableWidget->setItem(row, i+2, new QTableWidgetItem(QString::number(current->metrics[i])));
-        }
-        current = current->next;
-        row++;
-    }
+    refreshTable();
     showErrorMessage(result);
 }
 
@@ -82,13 +62,13 @@ std::string MainWindow::convertErrorToString(ResultLogic result, std::map<Result
 }
 void MainWindow::showErrorMessage(ResultLogic result){
     if(result == Ok){
-        QMessageBox::information(this, "Success",
+        QMessageBox::information(this, "Успех",
                                  QString("Данные успешно загружены.\nВсего строк считано: %1\nКорректных строк: %2\nНекорректных строк: %3")
-                                     .arg(context.totalRows)
-                                     .arg(context.correctRows)
-                                     .arg(context.inCorrectRows));
+                                     .arg(context.tableMetrics.totalRows)
+                                     .arg(context.tableMetrics.correctRows)
+                                     .arg(context.tableMetrics.totalRows - context.tableMetrics.correctRows));
     }
-    else if(result == Success){
+    else if(result == SuccessMetricCalculated){
 
     }
     else if(result == NoCorrectRows){
@@ -99,36 +79,59 @@ void MainWindow::showErrorMessage(ResultLogic result){
     }
 }
 void MainWindow::onCalculateMetricsButtonClicked() {
-    onLoadDataButtonClicked();
     AppParams param;
     strncpy(param.filterRegion, ui->regionInput->text().toStdString().c_str(),MAX_REGION_LENGTH-1);
     param.columnIndex = ui->columnInput->text().toInt();
-    ResultLogic resultMetric = doOperation(CalculateMetrics, &context, &param);
-    showErrorMessage(resultMetric);
-    if(resultMetric == Success){
-        QLineSeries* series = new QLineSeries();
-        for(int i = 0; i<context.countOfData;i++){
-            series->append(context.yearsDraw[i],context.metricsDraw[i]);            //сделать как во 2 оп чтобы оставались только выделенные регионы(просто вызвать функцию loaddata)
-        }
-        series->setName(param.filterRegion);
+    refreshTable();
 
-        QChart* chart = new QChart();
-        chart->addSeries(series);
-        chart->createDefaultAxes();
-
-        QValueAxis* axisX = qobject_cast<QValueAxis*>(chart->axes(Qt::Horizontal).first());
-        axisX->setLabelFormat("%d");
-
-        ui->chartView->setChart(chart);
-        ui->chartView->setRenderHint(QPainter::Antialiasing);
-        updateLabels();
-    }
+    ResultLogic result = doOperation(CalculateMetrics, &context, &param);
+    if (result == SuccessMetricCalculated)
+        refreshTable();
+    showErrorMessage(result);
+    updateLabels();
 }
 
 void MainWindow::updateLabels() {
-    ui->minOutput->setText(QString::number(context.min));
-    ui->medianOutput->setText(QString::number(context.median));
-    ui->maxOutput->setText(QString::number(context.max));
+    ui->minOutput->setText(QString::number(context.tableMetrics.min));
+    ui->medianOutput->setText(QString::number(context.tableMetrics.median));
+    ui->maxOutput->setText(QString::number(context.tableMetrics.max));
+}
+void MainWindow::regionChanged(){
+    _sleep(10); //необязательно
+    AppParams param;
+    QString inputText = ui->regionInput->text();
+    if (!inputText.isEmpty()) {
+        strncpy(param.filterRegion, inputText.toStdString().c_str(), MAX_REGION_LENGTH - 1);
+        param.filterRegion[MAX_REGION_LENGTH - 1] = '\0';
+    } else {
+        param.filterRegion[0] = '\0';
+    }
+    doOperation(SaveFilterRegion, &context, &param);
+}
+void MainWindow::refreshTable(){
+    ui->tableWidget->clear();
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(context.tableLogic.columnCount);
+
+    QStringList headers;
+    for(int i = 0; i<context.tableLogic.columnCount;i++)
+        headers << context.tableLogic.columnName[i];
+
+    ui->tableWidget->setHorizontalHeaderLabels(headers);
+    RowData* current = context.head;
+    for(int row = 0;current!=NULL;row++,current = current->next){
+        if(strlen(context.filterRegion) == 0 || strcmp(context.filterRegion,(char*)current->data[REGION_INDEX])== 0 ){
+            ui->tableWidget->insertRow(row);
+            for (int i = 0; i < (context.tableLogic.columnCount); i++) {
+                ui->tableWidget->setItem(row, i, new QTableWidgetItem(QString::fromUtf8((char*)current->data[i])));
+            }
+        }
+        else{
+            row--;
+        }
+
+    }
+
 }
 
 

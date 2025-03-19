@@ -15,7 +15,7 @@
 
 
 typedef struct RowData{
-    char** data;  //заменить по возиожности на void
+    void** data;
     struct RowData *next;
 }RowData;
 

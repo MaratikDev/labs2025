@@ -2,14 +2,18 @@
 
 void doInitialize(AppContext* context){
     context->head = NULL;
-    context->correctRows = 0;
-    context->inCorrectRows = 0;
-    context->totalRows = 0;
-    context->columnCount = 0;
-    context->columnName = NULL;
-    context->min = 0;
-    context->max = 0;
-    context->median = 0;
+    context->filterRegion[0] = '\0';
+    context->tableMetrics.correctRows = 0;
+    context->tableMetrics.totalRows = 0;
+    context->tableLogic.columnCount = 0;
+    context->tableLogic.columnName = NULL;
+    context->tableMetrics.min = 0;
+    context->tableMetrics.max = 0;
+    context->tableMetrics.median = 0;
+}
+void changeFilterRegion(AppContext* context, char* filterRegion){
+    strncpy(context->filterRegion,filterRegion,MAX_REGION_LENGTH-1);
+    context->filterRegion[MAX_REGION_LENGTH - 1] = '\0';
 }
 void doOpenFile(AppContext* context, char* fileName){
     strncpy(context->filename,fileName,MAX_FILENAME_LENGTH-1);
@@ -26,75 +30,72 @@ ResultLogic doLoadData(AppContext* context, char* filterRegion){
     return result;
 }
 ResultLogic doCalculateMetrics(AppContext* context, int columnIndex, char* filterRegion){
-    ResultLogic result = Success;
-    context->min = 0;
-    context->max = 0;
-    context->median = 0;
-    if (columnIndex < 3 || columnIndex > context->columnCount) {//отсчет идет с года, но если с метрик то columnIndex < 1 || columnIndex >= context->columnCount
+    ResultLogic result = SuccessMetricCalculated;
+    context->tableMetrics.min = 0;
+    context->tableMetrics.max = 0;
+    context->tableMetrics.median = 0;
+
+    if (columnIndex < 3 || columnIndex > context->tableLogic.columnCount) {
         result = InsultColumn;
     }
-    else{
+    else {
         RowData* current = context->head;
         int count = 0;
-        double* values = (double*)malloc(context->correctRows * sizeof(double));
-        int* yearsToDraw = (int*)malloc(context->correctRows * sizeof(int));
-        double* metricsToDraw = (double*)malloc(context->correctRows * sizeof(double));
-        if (!values || !yearsToDraw || !metricsToDraw) {
+        char* endptr;
+        double value;
+        double* values = (double*)malloc(context->tableMetrics.correctRows * sizeof(double));
+        if (!values) {
             result = MemoryFail;
         }
-        else{
+        else {
             while (current != NULL) {
-                if (strcmp(current->region, filterRegion) == 0) {
-                    values[count] = current->metrics[columnIndex-3]; //тут тоже тогда поменять на -1
-                    context->yearsDraw[count] = current->year;
-                    context->metricsDraw[count] = current->metrics[columnIndex-3]; // и тут
+                if (strcmp((char*)current->data[1], filterRegion) == 0) {
+                    value = strtod(current->data[columnIndex-1],&endptr);// втррой параметр ссылка на оставшкюся часть строки кторую не удалось преобразовть
+                    values[count] = value;
                     count++;
+
                 }
                 current = current->next;
             }
             if (count != 0) {
                 qsort(values, count, sizeof(double), compareDouble);
-                context->min = values[0];
-                context->max = values[count - 1];
-                context->median = (count % 2 == 0) ? (values[count / 2 - 1] + values[count / 2]) / 2 : values[count / 2];
+                context->tableMetrics.min = values[0];
+                context->tableMetrics.max = values[count - 1];
+                context->tableMetrics.median = (count % 2 == 0) ? (values[count / 2 - 1] + values[count / 2]) / 2 : values[count / 2];
             }
-            else{
+            else {
                 result = NoCorrectRows;
             }
             free(values);
-            free(yearsToDraw);
-            free(metricsToDraw);
         }
-        context->countOfData = count;
     }
     return result;
 }
-
-
 int compareDouble(const void* a, const void* b) {
     double arg1 = *(const double*)a;
     double arg2 = *(const double*)b;
-    if (arg1 < arg2)
-        return -1;
-    if (arg1 > arg2)
-        return 1;
-    return 0;
+    int result = 0;
+    if (arg2 - arg1 > EPS)
+        result = -1;
+    if (arg1 - arg2 > EPS)
+        result = 1;
+    return result;
 }
 
 ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion) {
     ResultLogic result = Ok;
     RowData* tail = NULL;
-    char line[1024];
+    char line[MAX_SYMBOLS_IN_A_ROW];
 
-    while (fgets(line, sizeof(line), file) && result == Ok) {
-        context->totalRows++;
+    while (fgets(line, sizeof(line), file)) {
+        context->tableMetrics.totalRows++;
         RowData* newNode = (RowData*)malloc(sizeof(RowData));
 
         if (!newNode) {
-            for (int i = 0; i < context->columnCount; i++) {
-                free(context->columnName[i]);
+            for (int i = 0; i < context->tableLogic.columnCount; i++) {
+                free(context->tableLogic.columnName[i]);
             }
-            free(context->columnName);
+            free(context->tableLogic.columnName);
             result = MemoryFail;
             break;
         }
@@ -102,70 +103,67 @@ ResultLogic loadRowsFromCSV(AppContext* context, FILE* file, char* filterRegion)
             int isCorrect = 1;
             char* token = strtok(line, ",");
 
-            if (token) {
-                newNode->year = atoi(token);
-                token = strtok(NULL, ",");
-            }
-            else {
-                context->inCorrectRows++;
+            // Выделяем память для массива data (char**)
+            newNode->data = (void**)malloc(context->tableLogic.columnCount * sizeof(void*));
+            if (!newNode->data) {
+                result = MemoryFail;
                 free(newNode);
+
                 isCorrect = 0;
             }
+            else {
+                int column = 0;
 
-            if (token && isCorrect) {
-                strncpy(newNode->region, token, MAX_REGION_LENGTH - 1);
-                newNode->region[MAX_REGION_LENGTH - 1] = '\0';
-                if((strlen(filterRegion) != 0) && (strcmp(filterRegion,newNode->region) != 0)){
-                    context->inCorrectRows++;
+                // Обрабатываем каждый токен в строке
+                while (token != NULL && column < context->tableLogic.columnCount) {
+                    newNode->data[column] = (char*)malloc((strlen(token) + 1) * sizeof(char));
+                    if (!newNode->data[column]) {
+                        result = MemoryFail;
+                        for (int i = 0; i < column; i++) {
+                            free(newNode->data[i]);
+                        }
+                        free(newNode->data);
+                        free(newNode);
+
+                        isCorrect = 0;
+                        break;
+                    }
+                    strcpy(newNode->data[column], token);
+                    token = strtok(NULL, ",");
+                    column++;
+                }
+
+                // Если строка некорректна (не хватает токенов), освобождаем память и пропускаем её
+                if (column < context->tableLogic.columnCount) {
+                    for (int i = 0; i < column; i++) {
+                        free(newNode->data[i]);
+                    }
+                    free(newNode->data);
                     free(newNode);
+
                     isCorrect = 0;
                 }
             }
-            else if (isCorrect) {
-                context->inCorrectRows++;
-                free(newNode);
-                isCorrect = 0;
-            }
 
-            if (isCorrect) {
-                newNode->metrics = (double*)malloc((context->columnCount - 2) * sizeof(double));
-                if (!newNode->metrics) {
-                    result = MemoryFail;
-                    free(newNode);
-                    context->inCorrectRows++;
+            // Если строка корректна, добавляем её в список
+            if (isCorrect && ((strcmp(filterRegion, newNode->data[REGION_INDEX]) == 0)||(strlen(filterRegion)==0)) ) {
+                context->tableMetrics.correctRows++;
+                newNode->next = NULL;
+                if (!context->head) {
+                    context->head = newNode;
                 }
                 else {
-                    for (int i = 0; i < context->columnCount - 2 && isCorrect; i++) {
-                        token = strtok(NULL, ",");
-                        if (token) {
-                            newNode->metrics[i] = atof(token);
-                        }
-                        else {
-                            context->inCorrectRows++;
-                            free(newNode->metrics);
-                            free(newNode);
-                            isCorrect = 0;
-                        }
-                    }
-
-                    if (isCorrect) {
-                        newNode->next = NULL;
-                        if (!context->head) {
-                            context->head = newNode;
-                        }
-                        else {
-                            tail->next = newNode;
-                        }
-                        tail = newNode;
-                        context->correctRows++;
-                    }
+                    tail->next = newNode;
                 }
+                tail = newNode;
+
             }
         }
     }
 
     fclose(file);
     return result;
+
 }
 
 ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion) {
@@ -174,30 +172,30 @@ ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion) {
     if (!file) {
         result = FileNotFound;
     } else {
-        char line[1024];
+        char line[MAX_SYMBOLS_IN_A_ROW];
         if (fgets(line, sizeof(line), file)) {
             char* token = strtok(line, ",");
             while (token != NULL && result == Ok) {
-                char** newColumnName = (char**)realloc(context->columnName, (context->columnCount + 1) * sizeof(char*));
+                char** newColumnName = (char**)realloc(context->tableLogic.columnName, (context->tableLogic.columnCount + 1) * sizeof(char*));
                 if (!newColumnName) {
-                    for (int i = 0; i < context->columnCount; i++) {
-                        free(context->columnName[i]);
+                    for (int i = 0; i < context->tableLogic.columnCount; i++) {
+                        free(context->tableLogic.columnName[i]);
                     }
-                    free(context->columnName);
+                    free(context->tableLogic.columnName);
                     result = MemoryFail;
                 } else {
-                    context->columnName = newColumnName;
-                    context->columnName[context->columnCount] = (char*)malloc(256 * sizeof(char));
-                    if (!context->columnName[context->columnCount]) {
-                        for (int i = 0; i < context->columnCount; i++) {
-                            free(context->columnName[i]);
+                    context->tableLogic.columnName = newColumnName;
+                    context->tableLogic.columnName[context->tableLogic.columnCount] = (char*)malloc(MAX_NAME_LENGTH * sizeof(char));
+                    if (!context->tableLogic.columnName[context->tableLogic.columnCount]) {
+                        for (int i = 0; i < context->tableLogic.columnCount; i++) {
+                            free(context->tableLogic.columnName[i]);
                         }
-                        free(context->columnName);
+                        free(context->tableLogic.columnName);
                         result = MemoryFail;
                     } else {
-                        strncpy(context->columnName[context->columnCount], token, 255);
-                        context->columnName[context->columnCount][255] = '\0';
-                        context->columnCount++;
+                        strncpy(context->tableLogic.columnName[context->tableLogic.columnCount], token, MAX_NAME_LENGTH-1);
+                        context->tableLogic.columnName[context->tableLogic.columnCount][MAX_NAME_LENGTH-1] = '\0';
+                        context->tableLogic.columnCount++;
                         token = strtok(NULL, ",");
                     }
                 }
@@ -213,3 +211,5 @@ ResultLogic loadDataFromCSV(AppContext* context, char* filterRegion) {
 
     return result;
 }
+
+
