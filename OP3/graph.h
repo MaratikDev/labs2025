@@ -7,6 +7,13 @@
 #include "RowData.h"
 #include <string.h>
 
+#define LEFT_BOTTOM_GRAPH_X 45
+#define STANDARD_COEF 25
+#define PIXEL_TO_METRIC 100
+#define HEIGHT 250
+#define WIDTH 782
+#define NULL_GRAPH 125
+
 class Graph : public QWidget
 {
     Q_OBJECT

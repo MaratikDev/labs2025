@@ -22,23 +22,26 @@ void Graph::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
 
     // График (если что, я сам эти комменты пишу что б читать код легче было)
-    int width = this->width();
-    int height = this->height(); //250
-    int leftBottomX = 45;
+    double width = this->width();
+    int height = this->height(); //HEIGHT
+    int leftBottomX = 45*(width/WIDTH);
     int leftBottomY = height;
     painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
-    painter.drawLine(leftBottomX,height/2, width-leftBottomX,height/2);  //  X
+    painter.drawLine(leftBottomX,height/2, width,height/2);  //  X
     painter.drawLine(leftBottomX,leftBottomY, leftBottomX,0);  //  Y
 
 
     // Подписи
     painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
-    painter.drawText(leftBottomX + width/2 - 50, height/2+25, QString("%1").arg(context->tableLogic.columnName[0]));
+    painter.drawText((leftBottomX + width/2 - 50*(width/WIDTH)), height/2+STANDARD_COEF, QString("%1").arg(context->tableLogic.columnName[0]));
     painter.rotate(-90);
-    painter.drawText(-130, 10, QString("%1").arg(context->tableLogic.columnName[columnInput-1]));
+    painter.drawText(-130, 10*(width/WIDTH), QString("%1").arg(context->tableLogic.columnName[columnInput-1]));
     painter.rotate(90);
-    for(int i = leftBottomY;i>=0;i-=25){
-        painter.drawText(   20,i,  QString("%1").arg( int( (height/2-i)/findCoef() ) )  ); //можно убрать int и тогда цена деления будет психо
+    //for(int i = leftBottomY;i>=0;i-=STANDARD_COEF){
+    //    painter.drawText(   20,i,  QString("%1").arg( int( (height/2-i)/findCoef() ) )  ); //можно убрать int и тогда цена деления будет психо
+    //}
+    for(int i = leftBottomY;i>=0;i-=STANDARD_COEF){
+        painter.drawText( 20*(width/WIDTH),i,  QString("%1").arg((height/2-i)*findCoefMetric()/PIXEL_TO_METRIC)    );
     }
 
 
@@ -61,9 +64,9 @@ void Graph::paintEvent(QPaintEvent *event) {
         painter.setPen(QPen(Qt::red, 3, Qt::SolidLine));
     }
 
-    //линия тренда (это тип доп задание)
-    painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*25,height/2-(context->tableMetrics.minYear*b0+b1)*findCoef(),
-                     leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*25,height/2-(context->tableMetrics.maxYear*b0+b1)*findCoef());
+    //линия тренда (это типо доп задание)
+    painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.minYear*b0+b1)*PIXEL_TO_METRIC/findCoefMetric(),
+                     leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.maxYear*b0+b1)*PIXEL_TO_METRIC/findCoefMetric());
 
     painter.setPen(QPen(Qt::blue, 3, Qt::SolidLine));
     while(current->next!=NULL){
@@ -71,12 +74,12 @@ void Graph::paintEvent(QPaintEvent *event) {
             year = (int)strtod((char*)current->data[0],&endptr);
             metric = strtod((char*)current->data[columnInput-1],&endptr);
             if (isStart && strlen(context->filterRegion)!=0){
-                painter.drawLine(leftBottomX+(year-context->tableMetrics.minYear)*25,height/2-metric*findCoef(),
-                                 leftBottomX+(lastYear-context->tableMetrics.minYear)*25,height/2-lastMetric*findCoef());
+                painter.drawLine(leftBottomX+(year-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-metric*PIXEL_TO_METRIC/findCoefMetric(),
+                                 leftBottomX+(lastYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-lastMetric*PIXEL_TO_METRIC/findCoefMetric());
             }
             lastYear = year;
             lastMetric = metric;
-            painter.drawPoint(leftBottomX+(year-context->tableMetrics.minYear)*25,height/2-metric*findCoef());
+            painter.drawPoint(leftBottomX+(year-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-metric*PIXEL_TO_METRIC/findCoefMetric());
 
             isStart = true;
         }
@@ -84,7 +87,7 @@ void Graph::paintEvent(QPaintEvent *event) {
         if(year % 5 == 0){
             if(!hasBeen){
                 painter.setPen(QPen(Qt::black, 2, Qt::SolidLine));
-                painter.drawText(leftBottomX+(year-context->tableMetrics.minYear-0.5)*25,height/2+10,QString((char*)current->data[0]));
+                painter.drawText(leftBottomX+(year-context->tableMetrics.minYear-0.5)*STANDARD_COEF*(width/WIDTH),height/2+10,QString((char*)current->data[0]));
                 painter.setPen(QPen(Qt::blue, 2, Qt::SolidLine));
                 hasBeen = true;
             }
@@ -94,28 +97,17 @@ void Graph::paintEvent(QPaintEvent *event) {
         }
         current = current->next;
     }
-
-
 }
-//это стандартный коэфицент,что б из значений метрик переводить в пиксели
-double Graph::findCoef(){
-    double result = 1;
-    while(context->tableMetrics.max*result - context->tableMetrics.min*result < 80){
-        result*=1.1;
-    }
-    while(context->tableMetrics.max*result > 100){
-        result/=1.1;
-    }
-    return result;
-}
-//это для цены деления на графике
+
 double Graph::findCoefMetric(){
-    int result = 1;
-    while(abs(context->tableMetrics.avgMetric)/result != 0){
-        result*=5;
+    double result = 1;
+    while((HEIGHT/2-context->tableMetrics.min*PIXEL_TO_METRIC/result)-(HEIGHT/2-context->tableMetrics.max*PIXEL_TO_METRIC/result) < 40){
+        result/=1.2;
     }
-    return result;
-
+    while((HEIGHT/2-context->tableMetrics.max*PIXEL_TO_METRIC/result < 0 ) || (HEIGHT/2-context->tableMetrics.min*PIXEL_TO_METRIC/result > HEIGHT)){
+        result*=1.2;
+    }
+    return ceil(result);
 }
 
 
