@@ -11,7 +11,6 @@ CONFIG += c++17
 SOURCES += \
     RowData.c \
     entrypoint.cpp \
-    graph.cpp \
     logic.c \
     main.cpp \
     mainwindow.cpp
@@ -20,7 +19,6 @@ HEADERS += \
     RowData.h \
     appcontext.h \
     entrypoint.h \
-    graph.h \
     logic.h \
     mainwindow.h
 

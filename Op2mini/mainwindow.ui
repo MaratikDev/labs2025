@@ -69,7 +69,7 @@
       <item>
        <widget class="QPushButton" name="calculateMetricsButton">
         <property name="text">
-         <string>Calculate Metrics and Draw</string>
+         <string>Calculate Metrics</string>
         </property>
        </widget>
       </item>
@@ -77,6 +77,12 @@
     </item>
     <item>
      <widget class="QTableWidget" name="tableWidget">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="editTriggers">
+       <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+      </property>
       <property name="rowCount">
        <number>0</number>
       </property>
@@ -134,16 +140,6 @@
       </item>
      </layout>
     </item>
-    <item>
-     <widget class="Graph" name="graphWidget" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>250</height>
-       </size>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -158,13 +154,6 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>Graph</class>
-   <extends>QWidget</extends>
-   <header>graph.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

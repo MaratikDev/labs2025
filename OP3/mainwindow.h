@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "appcontext.h"
 #include "entrypoint.h"
+#include "graph.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,6 +25,7 @@ private:
     Ui::MainWindow *ui;
     // Структура, храняющая состояние приложения
     AppContext context;
+    Graph *graphWidget;
 
     // Действия, выполняемые по нажатиям на кнопки интерфейса
     void onOpenFileButtonClicked();
@@ -36,5 +38,6 @@ private:
     void showErrorMessage(ResultLogic result);
     void refreshTable();
     void regionChanged();
+    void updateGraph(int columnIndex);
 };
 #endif // MAINWINDOW_H

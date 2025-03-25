@@ -85,18 +85,10 @@ void MainWindow::onCalculateMetricsButtonClicked() {
     refreshTable();
 
     ResultLogic result = doOperation(CalculateMetrics, &context, &param);
-    if (result == SuccessMetricCalculated){
+    if (result == SuccessMetricCalculated)
         refreshTable();
-        updateGraph(param.columnIndex);
-    }
     showErrorMessage(result);
     updateLabels();
-
-}
-
-void MainWindow::updateGraph(int columnIndex) {
-    ui->graphWidget->setData(&context, columnIndex);
-    ui->graphWidget->drawGraph();
 }
 
 void MainWindow::updateLabels() {
@@ -117,7 +109,6 @@ void MainWindow::regionChanged(){
 }
 void MainWindow::refreshTable(){
     ui->tableWidget->clear();
-    ui->graphWidget->clearMask();
     ui->tableWidget->setRowCount(0);
     ui->tableWidget->setColumnCount(context.tableLogic.columnCount);
 
