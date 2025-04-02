@@ -37,9 +37,7 @@ void Graph::paintEvent(QPaintEvent *event) {
     painter.rotate(-90);
     painter.drawText(-130, 10*(width/WIDTH), QString("%1").arg(context->tableLogic.columnName[columnInput-1]));
     painter.rotate(90);
-    //for(int i = leftBottomY;i>=0;i-=STANDARD_COEF){
-    //    painter.drawText(   20,i,  QString("%1").arg( int( (height/2-i)/findCoef() ) )  ); //можно убрать int и тогда цена деления будет психо
-    //}
+
     for(int i = leftBottomY;i>=0;i-=STANDARD_COEF){
         painter.drawText( 20*(width/WIDTH),i,  QString("%1").arg((height/2-i)*findCoefMetric()/PIXEL_TO_METRIC)    );
     }
@@ -58,17 +56,29 @@ void Graph::paintEvent(QPaintEvent *event) {
 
     //это типо если тренд восходящий то зелененькое а если нет то красное
     if(context->tableMetrics.coefB0>=0){
-        painter.setPen(QPen(Qt::green, 3, Qt::SolidLine));
+        painter.setPen(QPen(Qt::green, 2, Qt::DashLine));
     }
     else{
-        painter.setPen(QPen(Qt::red, 3, Qt::SolidLine));
+        painter.setPen(QPen(Qt::red, 2, Qt::DashLine));
     }
 
     //линия тренда (это типо доп задание)
     painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.minYear*b0+b1)*PIXEL_TO_METRIC/findCoefMetric(),
                      leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.maxYear*b0+b1)*PIXEL_TO_METRIC/findCoefMetric());
 
-    painter.setPen(QPen(Qt::blue, 3, Qt::SolidLine));
+    painter.setPen(QPen(Qt::darkRed, 2, Qt::DashLine));
+    painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.min)*PIXEL_TO_METRIC/findCoefMetric(),
+                     leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.min)*PIXEL_TO_METRIC/findCoefMetric());
+
+    painter.setPen(QPen(Qt::darkGreen, 2, Qt::DashLine));
+    painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.max)*PIXEL_TO_METRIC/findCoefMetric(),
+                     leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.max)*PIXEL_TO_METRIC/findCoefMetric());
+
+    painter.setPen(QPen(Qt::darkYellow, 2, Qt::DashLine));
+    painter.drawLine(leftBottomX+(context->tableMetrics.minYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.median)*PIXEL_TO_METRIC/findCoefMetric(),
+                     leftBottomX+(context->tableMetrics.maxYear-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-(context->tableMetrics.median)*PIXEL_TO_METRIC/findCoefMetric());
+
+    painter.setPen(QPen(Qt::blue, 4, Qt::SolidLine));
     while(current->next!=NULL){
         if(strlen(context->filterRegion) == 0 || strcmp(context->filterRegion,(char*)current->data[REGION_INDEX])== 0 ){
             year = (int)strtod((char*)current->data[0],&endptr);
@@ -80,7 +90,6 @@ void Graph::paintEvent(QPaintEvent *event) {
             lastYear = year;
             lastMetric = metric;
             painter.drawPoint(leftBottomX+(year-context->tableMetrics.minYear)*STANDARD_COEF*(width/WIDTH),height/2-metric*PIXEL_TO_METRIC/findCoefMetric());
-
             isStart = true;
         }
         //алгортим что б год писался только в определенном интервале и тольео один раз
@@ -97,6 +106,7 @@ void Graph::paintEvent(QPaintEvent *event) {
         }
         current = current->next;
     }
+    //shouldDraw = false;
 }
 
 double Graph::findCoefMetric(){

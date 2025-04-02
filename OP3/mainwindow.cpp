@@ -27,6 +27,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::initialize(){
+    ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     doOperation(Initialize, &context, NULL);
     errorMessages[Ok] = "Ошибок нет";
     errorMessages[MemoryFail] = "Ошибка с выделением памяти";
