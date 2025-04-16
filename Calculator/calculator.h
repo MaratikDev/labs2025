@@ -8,8 +8,6 @@ class Calculator {
 public:
     Calculator();
     double evaluate(const std::string& expression) const;
-    double evalReciprocal(const std::string& expression) const;
-
 private:
     Deikstra deikstra;
 };

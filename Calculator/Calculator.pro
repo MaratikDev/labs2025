@@ -12,6 +12,7 @@ SOURCES += \
     calculator.cpp \
     commands.cpp \
     deikstra.cpp \
+    factorycommand.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -20,6 +21,7 @@ HEADERS += \
     commands.h \
     deikstra.h \
     exceptions.h \
+    factorycommand.h \
     mainwindow.h
 
 FORMS += \

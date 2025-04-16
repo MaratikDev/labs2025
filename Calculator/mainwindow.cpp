@@ -7,32 +7,26 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    // Цифровые кнопки
     for (int i = 0; i < 10; ++i) {
         connect(findChild<QPushButton*>(QString("button%1").arg(i)),
                 &QPushButton::clicked, this, &MainWindow::onDigitClicked);
     }
 
-    // Операторы
     QStringList operators = {"Plus", "Minus", "Multiply", "Divide"};
     for (const auto& op : operators) {
         connect(findChild<QPushButton*>(QString("button%1").arg(op)),
                 &QPushButton::clicked, this, &MainWindow::onOperatorClicked);
     }
 
-    // Функции
-    QStringList functions = {"Sqrt", "Sin", "Cos", "Tan", "Cot"};
+    QStringList functions = {"Sqrt", "Sin", "Cos", "Tan", "Cot","Reciprocal"};
     for (const auto& func : functions) {
         connect(findChild<QPushButton*>(QString("button%1").arg(func)),
                 &QPushButton::clicked, this, &MainWindow::onFunctionClicked);
     }
 
-    // Скобки
     connect(ui->buttonLeftParen, &QPushButton::clicked, this, &MainWindow::onParenthesisClicked);
     connect(ui->buttonRightParen, &QPushButton::clicked, this, &MainWindow::onParenthesisClicked);
 
-    // Прочие кнопки
-    connect(ui->buttonReciprocal, &QPushButton::clicked, this, &MainWindow::onReciprocalClicked);
     connect(ui->buttonEquals, &QPushButton::clicked, this, &MainWindow::onEqualsClicked);
     connect(ui->buttonClear, &QPushButton::clicked, this, &MainWindow::onClearClicked);
     connect(ui->buttonDel, &QPushButton::clicked, this, &MainWindow::onBackspaceClicked);
@@ -75,7 +69,8 @@ void MainWindow::onFunctionClicked() {
     else if (button == ui->buttonCos) func = "cos(";
     else if (button == ui->buttonTan) func = "tan(";
     else if (button == ui->buttonCot) func = "cot(";
-    updateDisplay(ui->display->text() + func);
+    else if(button == ui->buttonReciprocal) func = "inv(";
+    updateDisplay(func+ui->display->text()+")");
     previousEqual = false;
 }
 
@@ -89,15 +84,7 @@ void MainWindow::onEqualsClicked() {
     }
 }
 
-void MainWindow::onReciprocalClicked() {
-    try {
-        double result = calculator.evalReciprocal(ui->display->text().toStdString());
-        updateDisplay(QString::number(result));
-        previousEqual = true;
-    } catch (const std::exception& e) {
-        QMessageBox::critical(this, "Error", e.what());
-    }
-}
+
 
 void MainWindow::onClearClicked() {
     updateDisplay("");
@@ -118,6 +105,16 @@ void MainWindow::onBackspaceClicked() {
 
 void MainWindow::onParenthesisClicked() {
     QPushButton* button = qobject_cast<QPushButton*>(sender());
+    QString text = ui->display->text();
+    if(button == ui->buttonLeftParen){
+        for (int i = 0; i < 10; ++i) {
+            if(text.endsWith(QString::number(i)) || text.endsWith(")") ){
+                updateDisplay(ui->display->text() +"*"+ button->text());
+                previousEqual = false;
+                return;
+            }
+        }
+    }
     updateDisplay(ui->display->text() + button->text());
     previousEqual = false;
 }

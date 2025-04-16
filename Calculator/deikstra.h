@@ -7,12 +7,12 @@
 #include <map>
 #include <memory>
 #include "commands.h"
+#include "factoryCommand.h"
 
 class Deikstra {
 public:
     Deikstra();
     double evaluate(const std::string& expression) const;
-    ~Deikstra();
 
 private:
     std::vector<std::string> tokenize(const std::string& expression) const;
@@ -23,7 +23,9 @@ private:
     bool isRightParenthesis(const std::string& token) const;
     std::vector<std::string> postfix(const std::string& expression) const;
     double calculate(std::vector<std::string> postfix) const;
-    std::map<std::string, Command*> operations;
+
+    std::map<std::string, CommandFactory::CommandCreator> operations;
+    CommandFactory factory;
 };
 
 #endif // DEIKSTRA_H
