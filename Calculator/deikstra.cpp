@@ -1,24 +1,23 @@
 #include "deikstra.h"
-#include "factoryCommand.h"
+#include "funcfactory.h"
+#include "operationfactory.h"
 #include "qdebug.h"
 #include "qlogging.h"
-#include <sstream>
 #include <cctype>
 #include <stdexcept>
 
 Deikstra::Deikstra() {
-    // Инициализация операций с указателями на методы CommandFactory
-    operations["+"] = &CommandFactory::createPlus;
-    operations["-"] = &CommandFactory::createMinus;
-    operations["*"] = &CommandFactory::createMultiply;
-    operations["/"] = &CommandFactory::createDivide;
+    operations["+"] = &OperationFactory::createPlus;
+    operations["-"] = &OperationFactory::createMinus;
+    operations["*"] = &OperationFactory::createMultiply;
+    operations["/"] = &OperationFactory::createDivide;
 
-    operations["sqrt"] = &CommandFactory::createSqrt;
-    operations["sin"] = &CommandFactory::createSin;
-    operations["cos"] = &CommandFactory::createCos;
-    operations["tan"] = &CommandFactory::createTan;
-    operations["cot"] = &CommandFactory::createCot;
-    operations["inv"] = &CommandFactory::createInv;
+    functions["sqrt"] = &FuncFactory::createSqrt;
+    functions["sin"] = &FuncFactory::createSin;
+    functions["cos"] = &FuncFactory::createCos;
+    functions["tan"] = &FuncFactory::createTan;
+    functions["cot"] = &FuncFactory::createCot;
+    functions["inv"] = &FuncFactory::createInv;
 }
 
 std::vector<std::string> Deikstra::tokenize(const std::string& expression) const {
@@ -59,11 +58,13 @@ std::vector<std::string> Deikstra::tokenize(const std::string& expression) const
 }
 
 bool Deikstra::isNumber(const std::string& token) const {
-    if (token.empty()) return false;
+    if (token.empty())
+        return false;
 
     size_t start = 0;
     if (token[0] == '-') {
-        if (token.size() == 1) return false;
+        if (token.size() == 1)
+            return false;
         start = 1;
     }
 
@@ -81,11 +82,11 @@ bool Deikstra::isNumber(const std::string& token) const {
 }
 
 bool Deikstra::isOperator(const std::string& token) const {
-    return operations.count(token) && !(factory.*operations.at(token))(0, 0)->isFunction();
+    return operations.count(token);
 }
 
 bool Deikstra::isFunction(const std::string& token) const {
-    return operations.count(token) && (factory.*operations.at(token))(0, 0)->isFunction();
+    return functions.count(token);
 }
 
 bool Deikstra::isLeftParenthesis(const std::string& token) const {
@@ -119,8 +120,8 @@ std::vector<std::string> Deikstra::postfix(const std::string& expression) const 
                 const std::string& top = operatorStack.top();
 
                 if (isOperator(top)) {
-                    Command* cmd1 = (factory.*operations.at(token))(0, 0);
-                    Command* cmd2 = (factory.*operations.at(top))(0, 0);
+                    Command* cmd1 = (opFactory.*operations.at(token))(0, 0);
+                    Command* cmd2 = (opFactory.*operations.at(top))(0, 0);
 
                     if (cmd1->precedence() <= cmd2->precedence()) {
                         output.push_back(top);
@@ -152,10 +153,10 @@ std::vector<std::string> Deikstra::postfix(const std::string& expression) const 
             }
 
             if (operatorStack.empty()) {
-                throw std::runtime_error("Mismatched parentheses");
+                throw ExpressionError("Mismatched parentheses");
             }
 
-            operatorStack.pop(); // Удаляем "("
+            operatorStack.pop();
 
             if (!operatorStack.empty() && isFunction(operatorStack.top())) {
                 output.push_back(operatorStack.top());
@@ -166,7 +167,7 @@ std::vector<std::string> Deikstra::postfix(const std::string& expression) const 
 
     while (!operatorStack.empty()) {
         if (isLeftParenthesis(operatorStack.top())) {
-            throw std::runtime_error("Mismatched parentheses");
+            throw ExpressionError("Mismatched parentheses");
         }
         output.push_back(operatorStack.top());
         operatorStack.pop();
@@ -186,30 +187,27 @@ double Deikstra::calculate(std::vector<std::string> postfix) const {
             evalStack.push(std::stod(token));
         }
         else if (operations.count(token)) {
-            auto creator = operations.at(token);
+            // Бинарные операции
+            if (evalStack.size() < 2)
+                throw ExpressionError("Not enough operands");
+            double b = evalStack.top(); evalStack.pop();
+            double a = evalStack.top(); evalStack.pop();
 
-            if (isFunction(token)) {
-                // Унарные операции
-                if (evalStack.empty()) throw ExpressionError("Not enough operands");
-                double a = evalStack.top();
-                evalStack.pop();
+            Command* cmd = (opFactory.*operations.at(token))(a, b);
+            double result = cmd->execute();
+            delete cmd;
+            evalStack.push(result);
+        }
+        else if (functions.count(token)) {
+            // Унарные операции
+            if (evalStack.empty())
+                throw ExpressionError("Not enough operands");
+            double a = evalStack.top(); evalStack.pop();
 
-                Command* cmd = (factory.*creator)(a, 0);
-                double result = cmd->execute();
-                delete cmd;
-                evalStack.push(result);
-            }
-            else {
-                // Бинарные операции
-                if (evalStack.size() < 2) throw ExpressionError("Not enough operands");
-                double b = evalStack.top(); evalStack.pop();
-                double a = evalStack.top(); evalStack.pop();
-
-                Command* cmd = (factory.*creator)(a, b);
-                double result = cmd->execute();
-                delete cmd;
-                evalStack.push(result);
-            }
+            Command* cmd = (funcFactory.*functions.at(token))(a);
+            double result = cmd->execute();
+            delete cmd;
+            evalStack.push(result);
         }
     }
 

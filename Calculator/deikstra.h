@@ -7,7 +7,8 @@
 #include <map>
 #include <memory>
 #include "commands.h"
-#include "factoryCommand.h"
+#include "funcfactory.h"
+#include "operationfactory.h"
 
 class Deikstra {
 public:
@@ -24,8 +25,10 @@ private:
     std::vector<std::string> postfix(const std::string& expression) const;
     double calculate(std::vector<std::string> postfix) const;
 
-    std::map<std::string, CommandFactory::CommandCreator> operations;
-    CommandFactory factory;
+    std::map<std::string, OperationFactory::OpCreator> operations;
+    std::map<std::string, FuncFactory::FuncCreator> functions;
+    OperationFactory opFactory;
+    FuncFactory funcFactory;
 };
 
 #endif // DEIKSTRA_H
