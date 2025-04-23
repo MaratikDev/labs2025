@@ -6,10 +6,9 @@
 
 void doInitialize(AppContext* context)
 {
-    memset(context, 0, sizeof(AppContext));
-    context->camera.scale = 1.0;
-    context->isDataLoaded = 0;
-    context->isNormalized = 0;
+    context->camera.scale = DEFAULT_SCALE;
+    context->isDataLoaded = DEFAULT_VALUE;
+    context->isNormalized = DEFAULT_VALUE;
 }
 
 void doOpenFile(AppContext* context, char* fileName)
@@ -20,43 +19,51 @@ void doOpenFile(AppContext* context, char* fileName)
 
 ResultLogic loadDataFromCSV(AppContext* context)
 {
+    ResultLogic result = Ok;
     FILE* file = fopen(context->filename, "r");
-    if (!file) return FileNotFound;
+    if (!file)
+        result = FileNotFound;
+    else{
+        char line[MAX_LINE_DATA];
+        int row = 0;
+        while (fgets(line, sizeof(line), file) && row < MAX_DATA_SIZE) {
+            char* token = strtok(line, ",");
+            int col = 0;
 
-    char line[1024];
-    int row = 0;
+            while (token && col < MAX_DATA_SIZE) {
+                context->surface.data[row][col] = atof(token);
+                token = strtok(NULL, ",");
+                col++;
+            }
 
-    while (fgets(line, sizeof(line), file) && row < MAX_DATA_SIZE) {
-        char* token = strtok(line, ",");
-        int col = 0;
-
-        while (token && col < MAX_DATA_SIZE) {
-            context->surface.data[row][col] = atof(token);
-            token = strtok(NULL, ",");
-            col++;
+            if (row == 0) {
+                context->surface.cols = col;
+            }
+            else if (col != context->surface.cols) {
+                fclose(file);
+                result = WrongFormat;
+                break;
+            }
+            row++;
         }
-
-        if (row == 0) {
-            context->surface.cols = col;
-        } else if (col != context->surface.cols) {
-            fclose(file);
-            return WrongFormat;
-        }
-
-        row++;
+        context->surface.rows = row;
+        context->isDataLoaded = 1;
+        fclose(file);
     }
-
-    context->surface.rows = row;
-    context->isDataLoaded = 1;
-    fclose(file);
-    return Ok;
+    return result;
 }
 
 ResultLogic doNormalizeData(AppContext* context, double step, double normMin, double normMax)
 {
-    if (!context->isDataLoaded) return NoDataLoaded;
-    if (step <= 0) return InvalidStep;
-    if (normMin >= normMax) return InvalidNormalizationRange;
+    ResultLogic result = Ok;
+    if (!context->isDataLoaded)
+        result = NoDataLoaded;
+    else if (step <= 0)
+        result = InvalidStep;
+    else if (normMin >= normMax)
+        result = InvalidNormalizationRange;
+
+    if(result == Ok){
 
     double minVal = context->surface.data[0][0];
     double maxVal = context->surface.data[0][0];
@@ -64,8 +71,10 @@ ResultLogic doNormalizeData(AppContext* context, double step, double normMin, do
     for (int i = 0; i < context->surface.rows; i++) {
         for (int j = 0; j < context->surface.cols; j++) {
             double val = context->surface.data[i][j];
-            if (val < minVal) minVal = val;
-            if (val > maxVal) maxVal = val;
+            if (val < minVal)
+                minVal = val;
+            if (val > maxVal)
+                maxVal = val;
         }
     }
 
@@ -78,7 +87,7 @@ ResultLogic doNormalizeData(AppContext* context, double step, double normMin, do
     for (int i = 0; i < context->surface.rows; i++) {
         for (int j = 0; j < context->surface.cols; j++) {
             double val = context->surface.data[i][j];
-            double normVal = normMin + ((val - minVal) * (normMax - normMin)) / (maxVal - minVal);
+            double normVal = normMin + (val - minVal) * (normMax - normMin) / (maxVal - minVal);
 
             context->surface.normalizedData[i][j].x = i * step;
             context->surface.normalizedData[i][j].y = j * step;
@@ -87,7 +96,8 @@ ResultLogic doNormalizeData(AppContext* context, double step, double normMin, do
     }
 
     context->isNormalized = 1;
-    return Ok;
+    }
+    return result;
 }
 
 void doRotateCameraX(AppContext* context, double angle)
@@ -127,11 +137,11 @@ void doScaleCamera(AppContext* context, double scale)
 
 void doResetCamera(AppContext* context)
 {
-    context->camera.xAngle = 0;
-    context->camera.yAngle = 0;
-    context->camera.zAngle = 0;
-    context->camera.xTranslate = 0;
-    context->camera.yTranslate = 0;
-    context->camera.zTranslate = 0;
-    context->camera.scale = 1.0;
+    context->camera.xAngle = DEFAULT_VALUE;
+    context->camera.yAngle = DEFAULT_VALUE;
+    context->camera.zAngle = DEFAULT_VALUE;
+    context->camera.xTranslate = DEFAULT_VALUE;
+    context->camera.yTranslate = DEFAULT_VALUE;
+    context->camera.zTranslate = DEFAULT_VALUE;
+    context->camera.scale = DEFAULT_SCALE;
 }

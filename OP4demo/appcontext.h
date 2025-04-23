@@ -4,7 +4,17 @@
 #define MAX_FILENAME_LENGTH 256
 #define MAX_DATA_POINTS 1000
 #define MAX_DATA_SIZE 100
-#define EPS 0.00001
+#define MAX_LINE_DATA 1024
+#define DEFAULT_SCALE 100
+#define DEFAULT_VALUE 0
+#define COUNT_OF_DIRECTIONS 4
+#define WIDGET_SIZE 400
+#define DISTANCE 500
+#define PI_RADIAN 180
+
+typedef struct {
+    double m[COUNT_OF_DIRECTIONS][COUNT_OF_DIRECTIONS];
+} Matrix4x4;
 
 typedef struct {
     double x, y, z;

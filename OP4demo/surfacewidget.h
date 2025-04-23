@@ -19,6 +19,8 @@ private:
     QPoint project3DTo2D(double x, double y, double z);
     void drawAxes(QPainter &painter);
     void drawSurface(QPainter &painter);
+    Matrix4x4 multiplyMatrices(const Matrix4x4 &a, const Matrix4x4 &b);
+    void multiplyMatrixVector(const Matrix4x4 &m, const double v[4], double result[4]);
 };
 
 #endif // SURFACEWIDGET_H
