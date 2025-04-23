@@ -20,7 +20,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-private slots:
+
+private:
     void onOpenFileButtonClicked();
     void onNormalizeButtonClicked();
     void onXRotateSliderChanged(int value);
@@ -31,8 +32,6 @@ private slots:
     void onZTranslateSliderChanged(int value);
     void onScaleSliderChanged(int value);
     void onResetCameraButtonClicked();
-
-private:
     Ui::MainWindow *ui;
     AppContext context;
     SurfaceWidget *surfaceWidget;
