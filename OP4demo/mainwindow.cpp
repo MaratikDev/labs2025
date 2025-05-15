@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->zTranslateSlider, &QSlider::valueChanged, this, &MainWindow::onZTranslateSliderChanged);
     connect(ui->scaleSlider, &QSlider::valueChanged, this, &MainWindow::onScaleSliderChanged);
     connect(ui->resetCameraButton, &QPushButton::clicked, this, &MainWindow::onResetCameraButtonClicked);
+
 }
 
 MainWindow::~MainWindow()

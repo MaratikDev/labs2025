@@ -1,4 +1,6 @@
 #include "logic.h"
+#include "qdebug.h"
+#include "qlogging.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,6 +11,8 @@ void doInitialize(AppContext* context)
     context->camera.scale = DEFAULT_SCALE;
     context->isDataLoaded = DEFAULT_VALUE;
     context->isNormalized = DEFAULT_VALUE;
+
+
 }
 
 void doOpenFile(AppContext* context, char* fileName)
